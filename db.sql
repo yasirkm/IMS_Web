@@ -1,56 +1,56 @@
-CREATE TABLE karyawan (
-    user_id serial PRIMARY KEY,
+CREATE TABLE employee (
+    employee_id serial PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    nama TEXT NOT NULL,
-    no_hp TEXT NOT NULL,
-    alamat TEXT,
-    Department TEXT NOT NULL
+    name TEXT NOT NULL,
+    phone_number TEXT NOT NULL,
+    address TEXT,
+    department TEXT NOT NULL
 );
 
-CREATE TABLE transaksi (
+CREATE TABLE transaction (
     transaction_id serial PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES karyawan(user_id),
-    jenis_transaksi TEXT NOT NULL,
-    no_resi TEXT,
-    tanggal TIMESTAMP NOT NULL
+    employee_id INTEGER NOT NULL REFERENCES employee(employee_id),
+    type TEXT NOT NULL,
+    receipt_number TEXT,
+    date TIMESTAMP NOT NULL
 );
 
-CREATE TABLE barang (
+CREATE TABLE product (
     product_id serial PRIMARY KEY,
-    nama TEXT NOT NULL,
-    kategori TEXT NOT NULL,
-    harga INTEGER NOT NULL,
-    stok INTEGER NOT NULL,
-    deskripsi TEXT
+    name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    price INTEGER NOT NULL,
+    stock INTEGER NOT NULL,
+    description TEXT
 );
 
-CREATE TABLE detail_transaksi (
-    transaction_id INTEGER REFERENCES transaksi(transaction_id),
-    product_id INTEGER REFERENCES barang(product_id),
-    jumlah INTEGER NOT NULL
+CREATE TABLE transaction_detail (
+    transaction_id INTEGER REFERENCES transaction(transaction_id),
+    product_id INTEGER REFERENCES product(product_id),
+    quantity INTEGER NOT NULL
 );
 
-INSERT INTO barang(nama, kategori, harga, stok, deskripsi)
+INSERT INTO product(name, category, price, stock, description)
 VALUES('Guling', 'Kamar', 30000, 3, 'Bantal guling untuk tidur');
 
-INSERT INTO barang(nama, kategori, harga, stok, deskripsi)
+INSERT INTO product(name, category, price, stock, description)
 VALUES('Selimut', 'Kamar', 100000, 1, 'Selimut untuk kasur');
 
-INSERT INTO karyawan(username, password, nama, no_hp, alamat, Department)
+INSERT INTO employee(username, password, name, phone_number, address, department)
 VALUES('eric', 'hahaha', 'Eric Nur', '08122121212', 'Bandung', 'Management');
 
-INSERT INTO karyawan(username, password, nama, no_hp, alamat, Department)
+INSERT INTO employee(username, password, name, phone_number, address, department)
 VALUES('pahrul', 'hihihi', 'Fahrul Maul', '08113123123', 'Bandung', 'Management');
 
-INSERT INTO transaksi(user_id, jenis_transaksi, no_resi, tanggal)
+INSERT INTO transaction(employee_id, type, receipt_number, date)
 VALUES(1, 'PEMASOKAN', '6801000042069', '15-10-2022');
 
-INSERT INTO transaksi(user_id, jenis_transaksi, no_resi, tanggal)
+INSERT INTO transaction(employee_id, type, receipt_number, date)
 VALUES(2, 'PEMASOKAN', '6801000042179', '22-02-2022');
 
-INSERT INTO detail_transaksi(transaction_id, product_id, jumlah)
+INSERT INTO transaction_detail(transaction_id, product_id, quantity)
 VALUES(1, 1, 3);
 
-INSERT INTO detail_transaksi(transaction_id, product_id, jumlah)
+INSERT INTO transaction_detail(transaction_id, product_id, quantity)
 VALUES(2, 2, 1);
