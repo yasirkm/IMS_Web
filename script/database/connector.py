@@ -1,12 +1,12 @@
 from config import postgre_config
 import psycopg2
 
-TRANSACTIONS = ('PEMASOKAN', 'PENGELUARAN')
-PEMASOKAN = 0
-PENGELUARAN = 1
+IN = 'IN'
+OUT = 'OUT'
+TRANSACTIONS = (IN, OUT)
 
 def add_product(name, category, price=0, description=None):
-    sql_statement = 'INSERT into barang(nama, kategori, harga, stok, deskripsi) VALUES(%s,%s,%s,0,%s);'
+    sql_statement = 'INSERT into product(name, category, price, stock, description) VALUES(%s,%s,%s,0,%s);'
     params = postgre_config()
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
@@ -19,8 +19,8 @@ def add_product(name, category, price=0, description=None):
 def _update_product_stock_by(amount, transaction_type, id):
     if transaction_type not in TRANSACTIONS:
         raise ValueError("Illegal transaction type")
-    amount = -amount if transaction_type == TRANSACTIONS[PENGELUARAN] else amount
-    sql_statement = "UPDATE barang SET stok=stok+%s WHERE product_id=%s;"
+    amount = -amount if transaction_type == OUT else amount
+    sql_statement = "UPDATE product SET stock=stock+%s WHERE product_id=%s;"
 
     params = postgre_config()
     connection = psycopg2.connect(**params)
