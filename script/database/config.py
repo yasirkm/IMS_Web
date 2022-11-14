@@ -1,8 +1,12 @@
+from pathlib import Path
+
 from configparser import ConfigParser
 
-def postgre_config(filename='db.ini', section='postgresql'):
+POSTGRE_CONFIG_PATH=Path(__file__).parent / 'db.ini'
+
+def postgre_config(filepath=POSTGRE_CONFIG_PATH, section='postgresql'):
     parser = ConfigParser()
-    parser.read(filename)
+    parser.read(filepath)
 
     db = {key:value for key, value in parser.items(section)}
 
