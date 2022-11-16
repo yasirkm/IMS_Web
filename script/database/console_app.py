@@ -3,8 +3,9 @@ import connector
 
 def main():
     user = Employee(1, 'eric', 'hahaha', 'Eric Nur', '08122121212', 'Bandung', 'Management')
-    new_user = Employee(0, 'yasirkm', 'hohoho', 'Yasir Khairul', '081122334455', 'Bandung', 'Management')
-    user.register_account(new_user)
+    # new_user = Employee(0, 'yasirkm', 'hohoho', 'Yasir Khairul', '081122334455', 'Bandung', 'Management')
+    # user.register_account(new_user)
+
     # new_product = Product(0, 'produk baru', 'futuristic', 2203, 'produk untuk testing')
     # user.show_catalog()
     # user.add_product(new_product)
@@ -17,7 +18,7 @@ def main():
     # user.show_product_information(1)
     # user.edit_product(product1, name='pillow')
 
-    user.show_transactions()
+    # user.show_transactions()
     # user.show_product_information(1)
     # user.do_transaction(None, ((product1, 5),), "IN")
     # user.show_transactions()
