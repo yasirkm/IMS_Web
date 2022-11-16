@@ -93,9 +93,9 @@ def get_product_information(product_id, department):
     }
     user_privilege = INFO_PRIVILEGES[department]
 
-    queried_attributes = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege]
+    query_attributez = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege]
 
-    sql_statement = f'SELECT {", ".join(queried_attributes)} FROM product WHERE product_id={product_id}'
+    sql_statement = f'SELECT {", ".join(query_attributez)} FROM product WHERE product_id={product_id}'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
@@ -107,6 +107,31 @@ def get_product_information(product_id, department):
     connection.close()
 
     return product_information
+
+def edit_product_information(product_id, department, name=None, category=None, description=None, price=None):
+    privilege_attribute = {
+        PRODUCT_NAME:'name',
+        PRODUCT_CATEGORY:'category',
+        PRODUCT_DESCRIPTION:'description',
+        PRODUCT_PRICE:'price'
+    }
+    attribute_edit_value = {
+        'name':name,
+        'category':category,
+        'description':description,
+        'price':price
+    }
+
+    user_privilege = EDIT_PRIVILEGES[department]
+    edit_attributes = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege and attribute_edit_value[attribute] is not None]
+    sql_statement = f'UPDATE product SET {", ".join(f"{attribute}={attribute_edit_value[attribute]}" for attribute in edit_attributes)} WHERE product_id={product_id}'
+
+    connection = psycopg2.connect(**CONNECTION_PARAMS)
+    cursor = connection.cursor()
+    cursor.execute(sql_statement)
+    cursor.close()
+    connection.commit()
+    connection.close()
 
 
 if __name__ == '__main__':
