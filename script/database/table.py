@@ -51,15 +51,27 @@ class Employee:
 
     def show_product_information(self, product_id):
         product_information = connector.get_product_information(self, product_id)
-        print(product_information)
+        product_id, name, category, price, stock, description = product_information
+        pad = 20
+        print(f"{'product_id':<{pad}}{'name':<{pad}}{'category':<{pad}}{'price':<{pad}}{'stock':<{pad}}{'description':<{pad}}")
+        print(f"{product_id:<{pad}}{name:<{pad}}{category:<{pad}}{price:<{pad}}{stock:<{pad}}{description:<{pad}}")
+        
 
     def show_catalog(self):
+        pad = 20
+        print(f"{'product_id':<{pad}}{'name':<{pad}}{'category':<{pad}}{'price':<{pad}}{'stock':<{pad}}{'description':<{pad}}")
         catalog = connector.get_catalog(self)
-        print(catalog)
+        for product_id, name, category, price, stock, description in catalog:
+            print(f"{product_id:<{pad}}{name:<{pad}}{category:<{pad}}{price:<{pad}}{stock:<{pad}}{description:<{pad}}")
+
 
     def show_transactions(self):
+        pad = 20
         transactions = connector.get_transactions(self)
-        print(transactions)
+        print(f"{'transaction_id':<{pad}}{'employee_id':<{pad}}{'type':<{pad}}{'receipt_number':<{pad}}{'date':<{pad}}")
+        for transaction in transactions:
+            transaction_id, employee_id, _type, receipt_number, date = transaction
+            print(f"{transaction_id:<{pad}}{employee_id:<{pad}}{_type:<{pad}}{str(receipt_number):<{pad}}{date.strftime('%Y-%m-%d %H:%M:%S'):<{pad}}")
 
     def register_account(self, username, password, name):
         pass
@@ -176,6 +188,9 @@ class Product:
     @description.setter
     def description(self, value):
         self._description = value
+
+    def __iter__(self):
+        return iter((self.product_id, self.name, self.category, self.price, self.stock, self.description))
 
 class Transaction_Detail:
     def __init__(self, transaction_id, product_id, quanitty):

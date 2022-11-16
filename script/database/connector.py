@@ -102,15 +102,15 @@ def get_product_information(employee, product_id):
     privilege_attribute = {
         PRODUCT_NAME:'name',
         PRODUCT_CATEGORY:'category',
-        PRODUCT_DESCRIPTION:'description',
         PRODUCT_PRICE:'price',
-        PRODUCT_STOCK:'stock'
+        PRODUCT_STOCK:'stock',
+        PRODUCT_DESCRIPTION:'description'
     }
     user_privilege = INFO_PRIVILEGES[department]
 
     query_attributez = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege]
 
-    sql_statement = f'SELECT {", ".join(query_attributez)} FROM product WHERE product_id={product_id}'
+    sql_statement = f'SELECT product_id, {", ".join(query_attributez)} FROM product WHERE product_id={product_id}'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
@@ -129,15 +129,15 @@ def get_catalog(employee):
     privilege_attribute = {
         PRODUCT_NAME:'name',
         PRODUCT_CATEGORY:'category',
-        PRODUCT_DESCRIPTION:'description',
         PRODUCT_PRICE:'price',
-        PRODUCT_STOCK:'stock'
+        PRODUCT_STOCK:'stock',
+        PRODUCT_DESCRIPTION:'description'
     }
     user_privilege = INFO_PRIVILEGES[department]
 
     query_attributez = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege]
 
-    sql_statement = f'SELECT product_id, {", ".join(query_attributez)} FROM product'
+    sql_statement = f'SELECT product_id, {", ".join(query_attributez)} FROM product ORDER BY product_id'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
@@ -169,6 +169,16 @@ def get_transactions(employee):
     connection.close()
 
     return result
+
+def get_transaction_details(transaction_id):
+    sql_statement = f"SELECT * FROM transaction_detail WHERE transaction_id={transaction_id}"
+    connection = psycopg2.connect(**CONNECTION_PARAMS)
+    cursor = connection.cursor()
+    cursor.execute(sql_statement)
+    transaction_details = cursor.fetchall()
+    cursor.close()
+    connection.close()
+
 
 def edit_product_information(employee, product, name=None, category=None, description=None, price=None):
     product_id = product.product_id
