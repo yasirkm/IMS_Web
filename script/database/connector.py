@@ -108,6 +108,24 @@ def get_product_information(product_id, department):
 
     return product_information
 
+def get_transactions(department):
+    user_privilege = INFO_PRIVILEGES[department]
+    if not user_privilege&TRANSACTION:
+        raise PermissionError("User doesn't have the privilege")
+
+    sql_statement = "SELECT * from transaction"
+
+    connection = psycopg2.connect(**CONNECTION_PARAMS)
+    cursor = connection.cursor()
+    cursor.execute(sql_statement)
+
+    result = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return result
+
 def edit_product_information(product_id, department, name=None, category=None, description=None, price=None):
     privilege_attribute = {
         PRODUCT_NAME:'name',
@@ -124,11 +142,11 @@ def edit_product_information(product_id, department, name=None, category=None, d
 
     user_privilege = EDIT_PRIVILEGES[department]
     edit_attributes = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege and attribute_edit_value[attribute] is not None]
-    sql_statement = f'UPDATE product SET {", ".join(f"{attribute}={attribute_edit_value[attribute]}" for attribute in edit_attributes)} WHERE product_id={product_id}'
+    sql_statement = f'UPDATE product SET {", ".join(f"{attribute}=%s" for attribute in edit_attributes)} WHERE product_id={product_id}'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
-    cursor.execute(sql_statement)
+    cursor.execute(sql_statement, tuple(attribute_edit_value[attribute] for attribute in edit_attributes))
     cursor.close()
     connection.commit()
     connection.close()
@@ -138,5 +156,8 @@ if __name__ == '__main__':
     # add_product('pillow', 'kamar', 200000, 'bantal untuk kamar')
     # transact(1, None, ((1,3),(2,3)), IN)
     # transact(1, None, ((1,2),(2,2)), OUT)
-    print(get_product_information(1, 'Management'))
+    edit_product_information(1, 'Management', name="testaja")
+    # print(get_product_information(1, 'Management'))
     print(get_product_information(1, 'Development'))
+    for transaction in get_transactions('Management'):
+        print(transaction)
