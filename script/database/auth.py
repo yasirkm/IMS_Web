@@ -103,7 +103,14 @@ def show_information():
     connection.close()
     pass
 
-def register(username, password, name, no_hp, alamat, department):
+def register(employee):
+    username = employee.get_username()
+    password = employee.get_password()
+    name = employee.get_name()
+    no_hp = employee.get_phone_number()
+    alamat = employee.get_address()
+    department = employee.get_department()
+    
     sql_statement = 'INSERT INTO karyawan(username, password, nama, no_hp, alamat, department) VALUES(%s,%s,%s,%s,%s,%s);'
 
     params = postgre_config()

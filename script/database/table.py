@@ -73,8 +73,8 @@ class Employee:
             transaction_id, employee_id, _type, receipt_number, date = transaction
             print(f"{transaction_id:<{pad}}{employee_id:<{pad}}{_type:<{pad}}{str(receipt_number):<{pad}}{date.strftime('%Y-%m-%d %H:%M:%S'):<{pad}}")
 
-    def register_account(self, username, password, name):
-        pass
+    def register_account(self, employee):
+        connector.register(employee)
 
     def do_transaction(self, receipt_number, transaction_details, transaction_type):
         connector.transact(self, receipt_number, transaction_details, transaction_type)

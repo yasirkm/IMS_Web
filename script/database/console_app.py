@@ -3,6 +3,8 @@ import connector
 
 def main():
     user = Employee(1, 'eric', 'hahaha', 'Eric Nur', '08122121212', 'Bandung', 'Management')
+    new_user = Employee(0, 'yasirkm', 'hohoho', 'Yasir Khairul', '081122334455', 'Bandung', 'Management')
+    user.register_account(new_user)
     # new_product = Product(0, 'produk baru', 'futuristic', 2203, 'produk untuk testing')
     # user.show_catalog()
     # user.add_product(new_product)

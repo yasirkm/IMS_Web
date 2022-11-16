@@ -206,3 +206,22 @@ def edit_product_information(employee, product, name=None, category=None, descri
     cursor.close()
     connection.commit()
     connection.close()
+
+def register(employee):
+    username = employee.get_username()
+    password = employee.get_password()
+    name = employee.get_name()
+    phone_number = employee.get_phone_number()
+    address = employee.get_address()
+    department = employee.get_department()
+    
+    sql_statement = 'INSERT INTO employee(username, password, name, phone_number, address, department) VALUES(%s,%s,%s,%s,%s,%s);'
+
+    params = postgre_config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+    cursor.execute(sql_statement, (username, password, name, phone_number, address, department))
+
+    cursor.close()
+    connection.commit()
+    connection.close()
