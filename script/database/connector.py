@@ -89,13 +89,9 @@ def transact(employee, receipt_number, transaction_details, transaction_type):
         transaction_details: a tuple of product_id an its quantity
         transaction_type: IN or OUT
     '''
-
-    employee_id = employee.get_employee_id()
-    
     transaction_id = _add_transaction_record(employee, receipt_number, transaction_type)
 
     for product, quantity in transaction_details:
-        product_id = product.product_id
         _add_transaction_detail(transaction_id, product, quantity)
         quantity = -quantity if transaction_type == OUT else quantity
         _update_product_stock_by(product, quantity)
@@ -174,7 +170,8 @@ def get_transactions(employee):
 
     return result
 
-def edit_product_information(employee, product_id, name=None, category=None, description=None, price=None):
+def edit_product_information(employee, product, name=None, category=None, description=None, price=None):
+    product_id = product.product_id
     department = employee.get_department()
     privilege_attribute = {
         PRODUCT_NAME:'name',
