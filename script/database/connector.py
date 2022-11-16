@@ -3,6 +3,7 @@ from datetime import datetime
 import psycopg2
 
 from config import postgre_config
+from privileges import *
 
 IN = 'IN'
 OUT = 'OUT'
@@ -82,9 +83,35 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type)
         quantity = -quantity if transaction_type == OUT else quantity
         _update_product_stock_by(product_id, quantity)
 
+def get_product_information(product_id, department):
+    privilege_attribute = {
+        PRODUCT_NAME:'name',
+        PRODUCT_CATEGORY:'category',
+        PRODUCT_DESCRIPTION:'description',
+        PRODUCT_PRICE:'price',
+        PRODUCT_STOCK:'stock'
+    }
+    user_privilege = INFO_PRIVILEGES[department]
+
+    queried_attributes = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege]
+
+    sql_statement = f'SELECT {", ".join(queried_attributes)} FROM product WHERE product_id={product_id}'
+
+    connection = psycopg2.connect(**CONNECTION_PARAMS)
+    cursor = connection.cursor()
+    cursor.execute(sql_statement)
+
+    product_information=cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return product_information
 
 
 if __name__ == '__main__':
-    add_product('pillow', 'kamar', 200000, 'bantal untuk kamar')
-    transact(1, None, ((1,3),(2,3)), IN)
-    transact(1, None, ((1,2),(2,2)), OUT)
+    # add_product('pillow', 'kamar', 200000, 'bantal untuk kamar')
+    # transact(1, None, ((1,3),(2,3)), IN)
+    # transact(1, None, ((1,2),(2,2)), OUT)
+    print(get_product_information(1, 'Management'))
+    print(get_product_information(1, 'Development'))
