@@ -106,7 +106,19 @@ class Menu:
         self.user.show_transactions()
 
     def do_transaction(self):
-        pass
+        transaction_type = input("Transaction type [IN/OUT]: ")
+        receipt_number = input("receipt_number: ")
+        receipt_number = None if receipt_number == '' else receipt_number
+        num_of_product = int(input('Number of product: '))
+        transaction_details = []
+        for _ in range(num_of_product):
+            product_id = int(input('Product id: '))
+            product = Product(*connector.get_product_information(self.user, product_id))
+            quantity = int(input('Quantity: '))
+            transaction_details.append((product, quantity))
+
+        self.user.do_transaction(receipt_number, transaction_details, transaction_type)
+
 
     def register(self):
         username = input('Username: ')
