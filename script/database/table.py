@@ -51,10 +51,13 @@ class Employee:
 
     def show_product_information(self, product_id):
         product_information = connector.get_product_information(self, product_id)
-        product_id, name, category, price, stock, description = product_information
-        pad = 20
-        print(f"{'product_id':<{pad}}{'name':<{pad}}{'category':<{pad}}{'price':<{pad}}{'stock':<{pad}}{'description':<{pad}}")
-        print(f"{product_id:<{pad}}{name:<{pad}}{category:<{pad}}{price:<{pad}}{stock:<{pad}}{description:<{pad}}")
+        if product_information is None:
+            print('Product not found!')
+        else:
+            product_id, name, category, price, stock, description = product_information
+            pad = 20
+            print(f"{'product_id':<{pad}}{'name':<{pad}}{'category':<{pad}}{'price':<{pad}}{'stock':<{pad}}{'description':<{pad}}")
+            print(f"{product_id:<{pad}}{name:<{pad}}{category:<{pad}}{price:<{pad}}{stock:<{pad}}{description:<{pad}}")
         
 
     def show_catalog(self):
@@ -79,8 +82,8 @@ class Employee:
     def do_transaction(self, receipt_number, transaction_details, transaction_type):
         connector.transact(self, receipt_number, transaction_details, transaction_type)
 
-    def edit_product(self, product_id, name=None, category=None, price=None,  description=None):
-        connector.edit_product_information(self, product_id, name, category, price, description)
+    def edit_product(self, product, name=None, category=None, price=None,  description=None):
+        connector.edit_product_information(self, product, name, category, price, description)
 
     
 class Transaction:

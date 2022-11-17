@@ -1,38 +1,21 @@
 from config import postgre_config
 import connector
 import psycopg2
-import plotly
-import plotly.graph_objects as go
 
 def login(username, password):
-    sql_statement = "SELECT * FROM karyawan"
+    sql_statement = f"SELECT * FROM employee WHERE username=%s AND password=%s"
     params = postgre_config()
+    
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
-    cursor.execute(sql_statement)
+    cursor.execute(sql_statement, (username, password))
     
-    rows = cursor.fetchall()
+    user = cursor.fetchone()
 
     cursor.close()
-    connection.commit()
     connection.close()
-    user = []
-    pw = []
-    for i in range(len(rows)):
-        for j in range(len(rows[i])):
-            if j == 1:
-                user.append(rows[i][j])
-            elif j == 2:
-                pw.append(rows[i][j])
-    fin_list = list(zip(user, pw))
-    for i in range(len(fin_list)):
-        if username in fin_list[i]:
-            if password == fin_list[i][1]:
-                print("login berhasil")
-            else:
-                print("username atau password salah")
-        else:
-            pass
+    
+    return user
 
 def department_check(username):
     sql_statement = "SELECT * FROM karyawan"

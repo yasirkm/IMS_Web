@@ -157,7 +157,7 @@ def get_transactions(employee):
     if not user_privilege&TRANSACTION:
         raise PermissionError("User doesn't have the privilege")
 
-    sql_statement = "SELECT * from transaction"
+    sql_statement = "SELECT * FROM transaction ORDER BY transaction_id"
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
