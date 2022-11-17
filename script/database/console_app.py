@@ -116,7 +116,7 @@ class Menu:
         address = input('Address: ')
         department = input('Department')
 
-        params = (username, password, name, phone_number, address, department)
+        params = (0, username, password, name, phone_number, address, department)
         params = (value if value!='' else None for value in params)
 
         new_account = Employee(*params)
