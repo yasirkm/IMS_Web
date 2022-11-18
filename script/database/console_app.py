@@ -1,4 +1,5 @@
 from getpass import getpass
+import os
 
 from table import Employee, Product
 import connector
@@ -123,10 +124,10 @@ class Menu:
     def register(self):
         username = input('Username: ')
         password = getpass()
-        name = input('Name')
+        name = input('Name: ')
         phone_number = input('Phone number: ')
         address = input('Address: ')
-        department = input('Department')
+        department = input('Department: ')
 
         params = (0, username, password, name, phone_number, address, department)
         params = (value if value!='' else None for value in params)
@@ -157,6 +158,8 @@ class Menu:
                 selected = int(input('Select procedure: ')) - 1
             except ValueError:
                 print('Refer to the procedure by its number')
+
+        os.system('cls')
         
         selected = selection_list[selected]
 
