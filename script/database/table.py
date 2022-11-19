@@ -148,13 +148,12 @@ class Employee:
 
     
 class Transaction:
-    def __init__(self, transaction_id, employee_id, type, date, receipt_number=None):
+    def __init__(self, transaction_id, employee_id, type, date_time, receipt_number=None):
         self.transaction_id = transaction_id
         self.employee_id = employee_id
         self.type = type
         self.receipt_number = receipt_number
-        self.date = date
-
+        self.date_time = date_time
     @property
     def transaction_id(self):
         return self._transaction_id
@@ -188,22 +187,22 @@ class Transaction:
         self._receipt_number = value
 
     @property
-    def date(self):
-        return self._date
+    def date_time(self):
+        return self._date_time
 
     @date.setter
-    def date(self, value):
-        self._date = value
+    def date_time(self, value):
+        self._date_time = value
 
 
 class Product:
     def __init__(self, product_id, name, category, price=0, stock=0, description=None):
-        self._product_id = product_id
-        self._name = name
-        self._category = category
-        self._price = price
-        self._stock = stock
-        self._description = description
+        self.product_id = product_id
+        self.name = name
+        self.category = category
+        self.price = price
+        self.stock = stock
+        self.description = description
 
     @property
     def product_id(self):

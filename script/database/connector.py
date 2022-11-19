@@ -91,6 +91,8 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type)
         quantity = -quantity if transaction_type == OUT else quantity
         _update_product_stock_by(product_id, quantity)
 
+    return transaction_id
+
 def get_product_information(product_id, columns=('product_id', 'name', 'category', 'price', 'stock', 'description')):
 
     sql_statement = f'SELECT {", ".join(columns)} FROM product WHERE product_id=%s'
