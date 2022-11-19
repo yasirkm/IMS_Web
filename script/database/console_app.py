@@ -164,7 +164,7 @@ class Menu:
         except psycopg2.errors.NotNullViolation as exc:
             raise AbortOperation(str(exc)) from exc
 
-        print(f'{new_employee.username} has been added with the id of {new_employee.get_employee_id()}')
+        print(f'User with the username {new_employee.get_username()} has been added with the id of {new_employee.get_employee_id()}')
             
     selections = {
         'Show catalog' : show_catalog,

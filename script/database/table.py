@@ -190,7 +190,7 @@ class Transaction:
     def date_time(self):
         return self._date_time
 
-    @date.setter
+    @date_time.setter
     def date_time(self, value):
         self._date_time = value
 
