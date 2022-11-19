@@ -140,11 +140,22 @@ class Employee:
         connector.transact(self.get_employee_id(), receipt_number, transaction_details, transaction_type)
 
     def edit_product(self, product_id, name=None, category=None, price=None,  description=None):
+        columns_value = {
+            'product_id':product_id,
+            'name':name,
+            'category':category,
+            'price':price,
+            'description':description
+        }
         edit_columns = self._get_edit_columns()
+        product = Product(**connector.get_product_information(product_id))
+        for column in edit_columns:
+            product[column] = columns_value[column] if columns_value[column] is not None else product[column]
+
         if not edit_columns:
             raise PrivilegeError("User don't have the privilege to edit product")
         
-        connector.edit_product_information(product_id, name, category, price, description)
+        connector.edit_product_information(product_id=product.product_id, name=product.name, category=product.category, price=product.price, description=product.description)
 
     
 class Transaction:
@@ -257,6 +268,9 @@ class Product:
 
     def __getitem__(self, attribute):
         return getattr(self, attribute)
+
+    def __setitem__(self, attribute, value):
+        setattr(self, attribute, value)
 
 class Transaction_Detail:
     def __init__(self, transaction_id, product_id, quantity):

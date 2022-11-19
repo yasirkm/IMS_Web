@@ -98,7 +98,7 @@ class Menu:
             raise AbortOperation('The specified product price is invalid')
 
 
-        self.user.edit_product(product_id, name, category, description, price)
+        self.user.edit_product(product_id=product_id, name=name, category=category, description=description, price=price)
 
     def show_transactions(self):
         try:
