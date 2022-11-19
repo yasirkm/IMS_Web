@@ -5,35 +5,32 @@ import psycopg2
 from config import postgre_config
 from privileges import *
 
+class ProductNotFoundError(Exception):
+    pass
+
 IN = 'IN'
 OUT = 'OUT'
 TRANSACTIONS = (IN, OUT)
 
 CONNECTION_PARAMS = postgre_config()
 
-def add_product(employee, product):
-    department = employee.get_department()
-    name = product.name
-    category = product.category
-    price = product.price
-    description = product.description
+def add_product(name, category, price, description):
 
-    user_privilege = EDIT_PRIVILEGES[department]
-    if not user_privilege&CATALOG:
-        raise PermissionError("User doesn't have the privilege")
-
-    sql_statement = 'INSERT into product(name, category, price, stock, description) VALUES(%s,%s,%s,0,%s);'
+    sql_statement = 'INSERT into product(name, category, price, stock, description) VALUES(%s,%s,%s,0,%s) RETURNING product_id;'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
     cursor.execute(sql_statement, (name, category, price, description))
 
+    product_id = cursor.fetchone()[0]
+
     cursor.close()
     connection.commit()
     connection.close()
 
-def _update_product_stock_by(product, quantity):
-    product_id = product.product_id
+    return product_id
+
+def _update_product_stock_by(product_id, quantity):
     sql_statement = "UPDATE product SET stock=stock+%s WHERE product_id=%s;"
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
@@ -44,11 +41,10 @@ def _update_product_stock_by(product, quantity):
     connection.commit()
     connection.close()
 
-def _add_transaction_detail(transaction_id, product, quantity):
+def _add_transaction_detail(transaction_id, product_id, quantity):
     '''
         Insert a transaction detail
     '''
-    product_id = product.product_id
 
     sql_statement = 'INSERT INTO transaction_detail(transaction_id, product_id, quantity) VALUES(%s, %s, %s)'
 
@@ -60,11 +56,10 @@ def _add_transaction_detail(transaction_id, product, quantity):
     connection.commit()
     connection.close()
 
-def _add_transaction_record(employee, receipt_number, transaction_type):
+def _add_transaction_record(employee_id, receipt_number, transaction_type):
     '''
         Insert a transaction record and return its transaction_id
     '''
-    employee_id = employee.get_employee_id()
 
     date_time = datetime.now()
     date_time = date_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -82,62 +77,42 @@ def _add_transaction_record(employee, receipt_number, transaction_type):
 
     return transaction_id
 
-def transact(employee, receipt_number, transaction_details, transaction_type):
+def transact(employee_id, receipt_number, transaction_details, transaction_type):
     '''
         Do a transaction. Update the database in accordance to transaction details and transaction type
         
         transaction_details: a tuple of product_id an its quantity
         transaction_type: IN or OUT
     '''
-    transaction_id = _add_transaction_record(employee, receipt_number, transaction_type)
+    transaction_id = _add_transaction_record(employee_id, receipt_number, transaction_type)
 
-    for product, quantity in transaction_details:
-        _add_transaction_detail(transaction_id, product, quantity)
+    for product_id, quantity in transaction_details:
+        _add_transaction_detail(transaction_id, product_id, quantity)
         quantity = -quantity if transaction_type == OUT else quantity
-        _update_product_stock_by(product, quantity)
+        _update_product_stock_by(product_id, quantity)
 
-def get_product_information(employee, product_id):
-    department = employee.get_department()
+def get_product_information(product_id, columns=('product_id', 'name', 'category', 'price', 'stock', 'description')):
 
-    privilege_attribute = {
-        PRODUCT_NAME:'name',
-        PRODUCT_CATEGORY:'category',
-        PRODUCT_PRICE:'price',
-        PRODUCT_STOCK:'stock',
-        PRODUCT_DESCRIPTION:'description'
-    }
-    user_privilege = INFO_PRIVILEGES[department]
-
-    query_attributez = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege]
-
-    sql_statement = f'SELECT product_id, {", ".join(query_attributez)} FROM product WHERE product_id={product_id}'
+    sql_statement = f'SELECT {", ".join(columns)} FROM product WHERE product_id=%s'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
-    cursor.execute(sql_statement)
+    cursor.execute(sql_statement, (product_id,))
 
-    product_information=cursor.fetchone()
+    column_values = cursor.fetchone()
+    if column_values is None:
+        raise ProductNotFoundError(f'The product with the id of {product_id} could not be found in the database')
+
+    product_information= {column:value for column, value in zip(columns,column_values)}
 
     cursor.close()
     connection.close()
 
     return product_information
 
-def get_catalog(employee):
-    department = employee.get_department()
+def get_catalog(columns=('product_id', 'name', 'category', 'price', 'stock', 'description')):
 
-    privilege_attribute = {
-        PRODUCT_NAME:'name',
-        PRODUCT_CATEGORY:'category',
-        PRODUCT_PRICE:'price',
-        PRODUCT_STOCK:'stock',
-        PRODUCT_DESCRIPTION:'description'
-    }
-    user_privilege = INFO_PRIVILEGES[department]
-
-    query_attributez = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege]
-
-    sql_statement = f'SELECT product_id, {", ".join(query_attributez)} FROM product ORDER BY product_id'
+    sql_statement = f'SELECT {", ".join(columns)} FROM product ORDER BY product_id'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
@@ -150,78 +125,61 @@ def get_catalog(employee):
 
     return catalog
 
-def get_transactions(employee):
-    department = employee.get_department()
-
-    user_privilege = INFO_PRIVILEGES[department]
-    if not user_privilege&TRANSACTION:
-        raise PermissionError("User doesn't have the privilege")
-
-    sql_statement = "SELECT * FROM transaction ORDER BY transaction_id"
+def get_transactions(columns=('transaction_id', 'employee_id', 'type', 'receipt_number', 'date_time')):
+    sql_statement = f"SELECT {', '.join(columns)} FROM transaction ORDER BY transaction_id"
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
     cursor.execute(sql_statement)
 
-    result = cursor.fetchall()
+    transactions = cursor.fetchall()
 
     cursor.close()
     connection.close()
 
-    return result
+    return transactions
 
-def get_transaction_details(transaction_id):
-    sql_statement = f"SELECT * FROM transaction_detail WHERE transaction_id={transaction_id}"
+def get_transaction_details(transaction_id, columns=('transaction_id', 'product_id', 'quantity')):
+    sql_statement = f"SELECT {', '.join(columns)} FROM transaction_detail WHERE transaction_id=%s"
+
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
-    cursor.execute(sql_statement)
+
+    cursor.execute(sql_statement, (transaction_id,))
     transaction_details = cursor.fetchall()
+
     cursor.close()
     connection.close()
 
+    return transaction_details
 
-def edit_product_information(employee, product, name=None, category=None, description=None, price=None):
-    product_id = product.product_id
-    department = employee.get_department()
-    privilege_attribute = {
-        PRODUCT_NAME:'name',
-        PRODUCT_CATEGORY:'category',
-        PRODUCT_DESCRIPTION:'description',
-        PRODUCT_PRICE:'price'
-    }
+
+def edit_product_information(product_id, name=None, category=None, description=None, price=None):
     attribute_edit_value = {
         'name':name,
         'category':category,
         'description':description,
         'price':price
     }
-
-    user_privilege = EDIT_PRIVILEGES[department]
-    edit_attributes = [attribute for privilege, attribute in privilege_attribute.items() if user_privilege&privilege and attribute_edit_value[attribute] is not None]
-    sql_statement = f'UPDATE product SET {", ".join(f"{attribute}=%s" for attribute in edit_attributes)} WHERE product_id={product_id}'
+    edit_attributes = [attribute for attribute in attribute_edit_value if attribute_edit_value[attribute] is not None]
+    sql_statement = f'UPDATE product SET {", ".join(f"{attribute}=%s" for attribute in edit_attributes)} WHERE product_id=%s'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
-    cursor.execute(sql_statement, tuple(attribute_edit_value[attribute] for attribute in edit_attributes))
+    cursor.execute(sql_statement, tuple(attribute_edit_value[attribute] for attribute in edit_attributes)+(product_id,))
     cursor.close()
     connection.commit()
     connection.close()
 
-def register(employee):
-    username = employee.get_username()
-    password = employee.get_password()
-    name = employee.get_name()
-    phone_number = employee.get_phone_number()
-    address = employee.get_address()
-    department = employee.get_department()
-    
-    sql_statement = 'INSERT INTO employee(username, password, name, phone_number, address, department) VALUES(%s,%s,%s,%s,%s,%s);'
+def register(username, password, name, phone_number, address, department):
+    sql_statement = 'INSERT INTO employee(username, password, name, phone_number, address, department) VALUES(%s,%s,%s,%s,%s,%s) RETURNING employee_id;'
 
     params = postgre_config()
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
     cursor.execute(sql_statement, (username, password, name, phone_number, address, department))
-
+    employee_id = cursor.fetchone()[0]
     cursor.close()
     connection.commit()
     connection.close()
+    return employee_id

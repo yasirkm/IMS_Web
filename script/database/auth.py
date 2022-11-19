@@ -3,7 +3,7 @@ import connector
 import psycopg2
 
 def login(username, password):
-    sql_statement = f"SELECT * FROM employee WHERE username=%s AND password=%s"
+    sql_statement = f"SELECT employee_id, username, password, name, phone_number, department, address FROM employee WHERE username=%s AND password=%s"
     params = postgre_config()
     
     connection = psycopg2.connect(**params)
@@ -85,25 +85,6 @@ def show_information():
     connection.commit()
     connection.close()
     pass
-
-def register(employee):
-    username = employee.get_username()
-    password = employee.get_password()
-    name = employee.get_name()
-    no_hp = employee.get_phone_number()
-    alamat = employee.get_address()
-    department = employee.get_department()
-    
-    sql_statement = 'INSERT INTO karyawan(username, password, nama, no_hp, alamat, department) VALUES(%s,%s,%s,%s,%s,%s);'
-
-    params = postgre_config()
-    connection = psycopg2.connect(**params)
-    cursor = connection.cursor()
-    cursor.execute(sql_statement, (username, password, name, no_hp, alamat, department))
-
-    cursor.close()
-    connection.commit()
-    connection.close()
 
     
     
