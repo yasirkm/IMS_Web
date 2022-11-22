@@ -44,10 +44,10 @@ INSERT INTO employee(username, password, name, phone_number, address, department
 VALUES('pahrul', 'hihihi', 'Fahrul Maul', '08113123123', 'Bandung', 'Management');
 
 INSERT INTO transaction(employee_id, type, receipt_number, date_time)
-VALUES(1, 'PEMASOKAN', '6801000042069', '15-10-2022');
+VALUES(1, 'IN', '6801000042069', '15-10-2022');
 
 INSERT INTO transaction(employee_id, type, receipt_number, date_time)
-VALUES(2, 'PEMASOKAN', '6801000042179', '22-02-2022');
+VALUES(2, 'IN', '6801000042179', '22-02-2022');
 
 INSERT INTO transaction_detail(transaction_id, product_id, quantity)
 VALUES(1, 1, 3);

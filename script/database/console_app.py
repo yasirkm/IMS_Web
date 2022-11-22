@@ -70,7 +70,7 @@ class Menu:
 
         try:
             self.user.show_product_information(product_id)
-        except connector.ProductNotFoundError as exc:
+        except connector.TableNotFoundError as exc:
             raise AbortOperation("That product doesn't exist")
 
     def edit_product(self):
@@ -81,7 +81,7 @@ class Menu:
 
         try:
             self.user.show_product_information(product_id)
-        except connector.ProductNotFoundError as exc:
+        except connector.TableNotFoundError as exc:
             raise AbortOperation(f"the product with the id of {product_id} doesn't exist") from exc
 
         name = input('Product name: ')

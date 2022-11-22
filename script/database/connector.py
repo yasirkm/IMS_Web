@@ -5,7 +5,7 @@ import psycopg2
 from config import postgre_config
 from privileges import *
 
-class ProductNotFoundError(Exception):
+class TableNotFoundError(Exception):
     pass
 
 IN = 'IN'
@@ -103,7 +103,7 @@ def get_product_information(product_id, columns=('product_id', 'name', 'category
 
     column_values = cursor.fetchone()
     if column_values is None:
-        raise ProductNotFoundError(f'The product with the id of {product_id} could not be found in the database')
+        raise TableNotFoundError(f'The product with the id of {product_id} could not be found in the database')
 
     product_information= {column:value for column, value in zip(columns,column_values)}
 
@@ -111,6 +111,45 @@ def get_product_information(product_id, columns=('product_id', 'name', 'category
     connection.close()
 
     return product_information
+
+def get_transaction_information(transaction_id, columns=('transaction_id', 'employee_id', 'type', 'receipt_number', 'date_time')):
+
+    sql_statement = f'SELECT {", ".join(columns)} FROM transaction WHERE transaction_id=%s'
+
+    connection = psycopg2.connect(**CONNECTION_PARAMS)
+    cursor = connection.cursor()
+    cursor.execute(sql_statement, (transaction_id,))
+
+    column_values = cursor.fetchone()
+    if column_values is None:
+        raise TableNotFoundError(f'The transaction with the id of {transaction_id} could not be found in the database')
+
+    transaction_information= {column:value for column, value in zip(columns,column_values)}
+
+    cursor.close()
+    connection.close()
+
+    return transaction_information
+
+def get_transaction_details(transaction_id, columns=('transaction_id', 'product_id', 'quantity')):
+    sql_statement = f'SELECT {", ".join(columns)} FROM transaction_detail WHERE transaction_id=%s'
+
+    connection = psycopg2.connect(**CONNECTION_PARAMS)
+    cursor = connection.cursor()
+    cursor.execute(sql_statement, (transaction_id,))
+
+    transaction_detail_list = []
+    result = cursor.fetchall()
+    if result is None:
+        raise TableNotFoundError(f'The transaction with the id of {transaction_id} could not be found in the database')
+    for values in result:
+        transaction_detail = {column:value for column, value in zip(columns, values)}
+        transaction_detail_list.append(transaction_detail)
+
+    cursor.close()
+    connection.close()
+
+    return transaction_detail_list
 
 def get_catalog(columns=('product_id', 'name', 'category', 'price', 'stock', 'description')):
 
@@ -141,19 +180,6 @@ def get_transactions(columns=('transaction_id', 'employee_id', 'type', 'receipt_
 
     return transactions
 
-def get_transaction_details(transaction_id, columns=('transaction_id', 'product_id', 'quantity')):
-    sql_statement = f"SELECT {', '.join(columns)} FROM transaction_detail WHERE transaction_id=%s"
-
-    connection = psycopg2.connect(**CONNECTION_PARAMS)
-    cursor = connection.cursor()
-
-    cursor.execute(sql_statement, (transaction_id,))
-    transaction_details = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-    return transaction_details
 
 
 def edit_product_information(product_id, name=None, category=None, description=None, price=None):
