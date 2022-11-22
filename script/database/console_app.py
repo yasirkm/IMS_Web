@@ -69,9 +69,11 @@ class Menu:
                 print("That product id is not valid!")
 
         try:
-            self.user.show_product_information(product_id)
+            product = Product(**connector.get_product_information(product_id))
         except connector.TableNotFoundError as exc:
-            raise AbortOperation("That product doesn't exist")
+            raise AbortOperation("That product doesn't exist") from exc
+
+        self.user.show_product_information(product)
 
     def edit_product(self):
         try:
@@ -80,9 +82,11 @@ class Menu:
             raise AbortOperation("product id is not valid!") from exc
 
         try:
-            self.user.show_product_information(product_id)
+            product = Product(**connector.get_product_information(product_id))
         except connector.TableNotFoundError as exc:
             raise AbortOperation(f"the product with the id of {product_id} doesn't exist") from exc
+
+        self.user.show_product_information(product)
 
         name = input('Product name: ')
         name = None if name=='' else name
@@ -98,11 +102,11 @@ class Menu:
             raise AbortOperation('The specified product price is invalid')
 
 
-        self.user.edit_product(product_id=product_id, name=name, category=category, description=description, price=price)
+        self.user.edit_product(product, name=name, category=category, description=description, price=price)
 
     def show_transactions(self):
         try:
-            self.user.show_transactions()
+            self.user.show_transaction_history()
         except PrivilegeError:
             print("You don't have the privilege to view transaction history")
 
@@ -137,11 +141,13 @@ class Menu:
             except ValueError as exc:
                 raise AbortOperation(f"The specified quantity for product with the id of {product_id} is invalid") from exc
             transaction_details.append((product_id, quantity))
+
         try:
-            self.user.do_transaction(receipt_number, transaction_details, transaction_type)
+            new_transaction = self.user.do_transaction(receipt_number, transaction_details, transaction_type)
         except psycopg2.errors.ForeignKeyViolation as exc:
             raise AbortOperation(str(exc)) from exc
-
+        
+        print(f"A new transaction of type {new_transaction.type} has been added with the id of {new_transaction.transaction_id} at {new_transaction.date_time}")
 
     def register(self):
         username = input('Username: ')

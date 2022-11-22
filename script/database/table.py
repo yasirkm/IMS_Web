@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import connector
 
 from privileges import *
@@ -67,7 +69,7 @@ class Employee:
         
         return new_product
 
-    def _get_queried_columns(self):
+    def _get_query_columns(self):
         privilege_column = {
             PRODUCT_NAME:'name',
             PRODUCT_CATEGORY:'category',
@@ -93,9 +95,8 @@ class Employee:
 
         return edited_columns
 
-    def show_product_information(self, product_id):
-        product = Product(**connector.get_product_information(product_id))
-        queried_columns = {column:product[column] for column in self._get_queried_columns()}
+    def show_product_information(self, product):
+        queried_columns = {column:product[column] for column in self._get_query_columns()}
 
         row = "{:<20}"*len(queried_columns)
         print(row.format(*map(str, queried_columns)))
@@ -103,7 +104,7 @@ class Employee:
     
 
     def show_catalog(self):
-        queried_columns = self._get_queried_columns()
+        queried_columns = self._get_query_columns()
         row = "{:<20}"*len(queried_columns)
         print(row.format(*map(str, queried_columns)))
 
@@ -112,7 +113,7 @@ class Employee:
             print(row.format(*map(str, values)))
 
 
-    def show_transactions(self):
+    def show_transaction_history(self):
         user_privilege = self.get_info_privilege()
         if not user_privilege&TRANSACTION:
             raise PrivilegeError("User don't have the privilege to view transaction history")
@@ -134,26 +135,35 @@ class Employee:
         return new_employee
 
     def do_transaction(self, receipt_number, transaction_details, transaction_type):
+        date_time = datetime.now()
+        date_time = date_time.strftime('%Y-%m-%d %H:%M:%S')
+        employee_id = self.get_employee_id()
         user_privilege = self.get_edit_privilege()
+
         if not user_privilege%TRANSACTION:
             raise PrivilegeError("User don't have the privilge to do transaction")
-        connector.transact(self.get_employee_id(), receipt_number, transaction_details, transaction_type)
+        
+        transaction_id = connector.transact(employee_id, receipt_number, transaction_details, transaction_type, date_time)
 
-    def edit_product(self, product_id, name=None, category=None, price=None,  description=None):
+        new_transaction = Transaction(transaction_id, employee_id, transaction_type, date_time, receipt_number)
+
+        return new_transaction
+
+    def edit_product(self, product, name=None, category=None, price=None,  description=None):
         columns_value = {
-            'product_id':product_id,
             'name':name,
             'category':category,
             'price':price,
             'description':description
         }
         edit_columns = self._get_edit_columns()
-        product = Product(**connector.get_product_information(product_id))
-        for column in edit_columns:
-            product[column] = columns_value[column] if columns_value[column] is not None else product[column]
 
         if not edit_columns:
             raise PrivilegeError("User don't have the privilege to edit product")
+        
+        for column in edit_columns:
+            product[column] = columns_value[column] if columns_value[column] is not None else product[column]
+
         
         connector.edit_product_information(product_id=product.product_id, name=product.name, category=product.category, price=product.price, description=product.description)
 
