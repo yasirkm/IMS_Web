@@ -3,7 +3,7 @@ import os
 
 import psycopg2.errors
 
-from table import Employee, Product, PrivilegeError
+from table import Employee, Product, Transaction, Transaction_Detail, PrivilegeError
 import connector
 import auth
 
@@ -104,12 +104,27 @@ class Menu:
 
         self.user.edit_product(product, name=name, category=category, description=description, price=price)
 
+    def show_transaction_by_id(self):
+        transaction_id = None
+        while transaction_id is None:
+            try:
+                transaction_id = int(input("transaction id: "))
+            except ValueError:
+                print("That transaction id is not valid!")
+
+        try:
+            transaction = Transaction(**connector.get_transaction_information(transaction_id))
+        except connector.TableNotFoundError as exc:
+            raise AbortOperation("That transaction doesn't exist") from exc
+            
+        self.user.show_transaction_information(transaction)
+            
     def show_transactions(self):
         try:
             self.user.show_transaction_history()
         except PrivilegeError:
             print("You don't have the privilege to view transaction history")
-
+    
     def do_transaction(self):
         transaction_type = input("Transaction type [IN/OUT]: ")
         if transaction_type not in connector.TRANSACTIONS:
@@ -174,11 +189,12 @@ class Menu:
             
     selections = {
         'Show catalog' : show_catalog,
-        'Show product by id' : show_product_by_id,
         'Show transactions' : show_transactions,
+        'Show product by id' : show_product_by_id,
+        'Show transaction by id' : show_transaction_by_id,
         'Add new product': add_product,
-        'Edit product by id': edit_product,
         'Do transaction' : do_transaction,
+        'Edit product by id': edit_product,
         'Register user' : register
     }
 

@@ -39,7 +39,6 @@ def _update_product_stock_by(product_id, quantity):
     connection.commit()
     connection.close()
 
-
 def transact(employee_id, receipt_number, transaction_details, transaction_type, date_time):
     '''
         Do a transaction. Update the database in accordance to transaction details and transaction type
@@ -169,8 +168,6 @@ def get_transactions(columns=('transaction_id', 'employee_id', 'type', 'receipt_
     connection.close()
 
     return transactions
-
-
 
 def edit_product_information(product_id, name=None, category=None, description=None, price=None):
     attribute_edit_value = {

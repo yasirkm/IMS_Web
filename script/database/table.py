@@ -102,6 +102,27 @@ class Employee:
         print(row.format(*map(str, queried_columns)))
         print(row.format(*map(str, queried_columns.values())))
     
+    def show_transaction_information(self, transaction):
+        def _show_transaction_detail():
+            transaction_detail_list = connector.get_transaction_details(transaction.transaction_id)
+            for transaction_detail_information in transaction_detail_list:
+                transaction_detail = Transaction_Detail(**transaction_detail_information)
+                product = Product(**connector.get_product_information(transaction_detail.product_id))
+                print(f'product_name: {product.name}')
+                print(f'quantity: {transaction_detail.quantity}')
+                print()
+
+        user_privilege = self.get_info_privilege()
+        if not user_privilege&TRANSACTION:
+                raise PrivilegeError('User has no privilege to see transaction history')
+        print(f'transaction_id: {transaction.transaction_id}')
+        print(f'employee_id: {transaction.employee_id}')
+        print(f'type: {transaction.type}')
+        print(f'receipt_number: {transaction.receipt_number}')
+        print(f'date_time: {transaction.date_time}')
+        print()
+        print('details: ')
+        _show_transaction_detail()
 
     def show_catalog(self):
         queried_columns = self._get_query_columns()
@@ -111,7 +132,6 @@ class Employee:
         catalog = connector.get_catalog(queried_columns)
         for values in catalog:
             print(row.format(*map(str, values)))
-
 
     def show_transaction_history(self):
         user_privilege = self.get_info_privilege()
