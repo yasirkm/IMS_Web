@@ -58,7 +58,10 @@ class Menu:
         print(f"{new_product.name} has been added with the id of {new_product.product_id}")
 
     def show_catalog(self):
-        self.user.show_catalog()
+        try:
+            self.user.show_catalog()
+        except PrivilegeError as exc:
+            raise AbortOperation(str(exc)) from exc
 
     def show_product_by_id(self):
         product_id = None
@@ -73,7 +76,10 @@ class Menu:
         except connector.TableNotFoundError as exc:
             raise AbortOperation("That product doesn't exist") from exc
 
-        self.user.show_product_information(product)
+        try:
+            self.user.show_product_information(product)
+        except PrivilegeError as exc:
+            raise AbortOperation(str(exc)) from exc
 
     def edit_product(self):
         try:
@@ -86,7 +92,10 @@ class Menu:
         except connector.TableNotFoundError as exc:
             raise AbortOperation(f"the product with the id of {product_id} doesn't exist") from exc
 
-        self.user.show_product_information(product)
+        try:
+            self.user.show_product_information(product)
+        except PrivilegeError as exc:
+            raise AbortOperation(str(exc)) from exc
 
         name = input('Product name: ')
         name = None if name=='' else name
@@ -101,8 +110,10 @@ class Menu:
         except ValueError:
             raise AbortOperation('The specified product price is invalid')
 
-
-        self.user.edit_product(product, name=name, category=category, description=description, price=price)
+        try:
+            self.user.edit_product(product, name=name, category=category, description=description, price=price)
+        except PrivilegeError as exc:
+            raise AbortOperation(str(exc)) from exc
 
     def show_transaction_by_id(self):
         transaction_id = None
@@ -116,8 +127,11 @@ class Menu:
             transaction = Transaction(**connector.get_transaction_information(transaction_id))
         except connector.TableNotFoundError as exc:
             raise AbortOperation("That transaction doesn't exist") from exc
-            
-        self.user.show_transaction_information(transaction)
+        
+        try:
+            self.user.show_transaction_information(transaction)
+        except PrivilegeError as exc:
+            raise AbortOperation(str(exc)) from exc
             
     def show_transactions(self):
         try:
@@ -161,6 +175,8 @@ class Menu:
             new_transaction = self.user.do_transaction(receipt_number, transaction_details, transaction_type)
         except psycopg2.errors.ForeignKeyViolation as exc:
             raise AbortOperation(str(exc)) from exc
+        except PrivilegeError as exc:
+            raise AbortOperation(str(exc)) from exc
         
         print(f"A new transaction of type {new_transaction.type} has been added with the id of {new_transaction.transaction_id} at {new_transaction.date_time}")
 
@@ -184,6 +200,9 @@ class Menu:
             raise AbortOperation('That user already exists') from exc
         except psycopg2.errors.NotNullViolation as exc:
             raise AbortOperation(str(exc)) from exc
+        except PrivilegeError as exc:
+            raise AbortOperation(str(exc)) from exc
+
 
         print(f'User with the username {new_employee.get_username()} has been added with the id of {new_employee.get_employee_id()}')
             
