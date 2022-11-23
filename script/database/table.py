@@ -149,6 +149,7 @@ class Employee:
         return callback[attribute]()
     def keys(self):
         return ('employee_id', 'username', 'password', 'name', 'phone_number', 'address', 'department')
+    
 class Can_Edit_Catalog(ABC):
     def add_product(self, name, category, price, description=None):
         user_privilege = self.get_edit_privilege()
@@ -163,7 +164,6 @@ class Can_Edit_Catalog(ABC):
     def delete_product(self, product):
         product.available = False
         connector.edit_product_information(**product)
-        return product
     
 class Can_Edit_Product_Info(ABC):
     def edit_product(self, product, name=None, category=None, price=None,  description=None):
@@ -182,7 +182,7 @@ class Can_Edit_Product_Info(ABC):
             product[column] = columns_value[column] if columns_value[column] is not None else product[column]
 
         
-        connector.edit_product_information(product_id=product.product_id, name=product.name, category=product.category, price=product.price, description=product.description)
+        connector.edit_product_information(**product)
 
 class Can_Do_Transaction(ABC):
     def do_transaction(self, receipt_number, transaction_details, transaction_type):
