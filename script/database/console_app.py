@@ -1,5 +1,7 @@
-from getpass import getpass
 import os
+import sys
+
+from getpass import getpass
 
 import psycopg2.errors
 
@@ -8,16 +10,18 @@ import connector
 import auth
 
 def main():
-    menu = Menu()
-    while True:
-        print()
-        try:
-            menu.select()
-        except AbortOperation as e:
-            print(e)
-        except KeyboardInterrupt:
-            print("You have exited the console app")
-            break
+    try:
+        menu = Menu()
+        os.system('cls')
+        while True:
+            print()
+            try:
+                menu.select()
+            except AbortOperation as e:
+                print(e)
+    except KeyboardInterrupt:
+        print("You have exited the console app")
+        sys.exit()
 
 class AbortOperation(Exception):
     pass
@@ -36,9 +40,8 @@ class Menu:
             try:
                 user = Employee(**auth.login(username, password))
             except auth.AuthenticationError as exc:
-                print(str(exc))
-            finally:
                 os.system('cls')
+                print(str(exc))
         try:
             type_cast = department_class[user.get_department()]
             user = type_cast(**user)
