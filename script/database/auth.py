@@ -2,20 +2,28 @@ from config import postgre_config
 import connector
 import psycopg2
 
-def login(username, password):
-    sql_statement = f"SELECT employee_id, username, password, name, phone_number, department, address FROM employee WHERE username=%s AND password=%s"
+class AuthenticationError(Exception):
+    pass
+
+def login(username, password, columns=('employee_id', 'username', 'password', 'name', 'phone_number', 'address', 'department')):
+    sql_statement = f'SELECT {", ".join(columns)} FROM employee WHERE username=%s AND password=%s'
+
     params = postgre_config()
-    
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
     cursor.execute(sql_statement, (username, password))
-    
-    user = cursor.fetchone()
+
+    column_values = cursor.fetchone()
+
+    if column_values is None:
+        raise AuthenticationError("username or password is incorrect!")
+
+    employee_information= {column:value for column, value in zip(columns,column_values)}
 
     cursor.close()
     connection.close()
-    
-    return user
+
+    return employee_information
 
 def department_check(username):
     sql_statement = "SELECT * FROM karyawan"
@@ -85,20 +93,3 @@ def show_information():
     connection.commit()
     connection.close()
     pass
-
-    
-    
-
-if __name__ == '__main__':
-    show_information()
-    #print(department_check("tomuto"))
-    username = str(input("Masukkan Username : "))
-    password = str(input("Masukkan Password : "))
-    nama = str(input("Masukkan nama : "))
-    no_hp = str(input("Masukkan Nomor Handphone : "))
-    alamat = str(input("Masukkan Alamat : "))
-    department = str(input("Masukkan Department : "))
-
-    register(username, password, nama, no_hp, alamat, department)
-
-    #login(username, password)

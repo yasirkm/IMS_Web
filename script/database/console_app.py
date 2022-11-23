@@ -28,11 +28,13 @@ class Menu:
         while not user:
             username = input("Username: ")
             password = getpass()
-            user = auth.login(username, password)
-            if not user:
-                print("username or password is incorrect!")
-                print()
-        self.user = Employee(*user)
+            try:
+                user = auth.login(username, password)
+            except auth.AuthenticationError as exc:
+                print(str(exc))
+            finally:
+                os.system('cls')
+        self.user = Employee(**user)
 
     def add_product(self):
         name = input('Product name: ')
@@ -218,6 +220,8 @@ class Menu:
     }
 
     def select(self):
+        print(f'Logged in as {self.user.get_name()} from {self.user.get_department()} department')
+
         selection_list = list(self.selections)
 
         print("Procedures: ")
