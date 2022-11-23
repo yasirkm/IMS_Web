@@ -192,8 +192,7 @@ class Menu:
             raise AbortOperation(f"the product with the id of {product_id} doesn't exist") from exc
         
         # Deleting product
-        product.available = False
-        connector.edit_product_information(**product) # Editing the available attribute essentially deletes the product from catalog
+        self.user.delete_product(product)
         print(f'Product with the id of {product.product_id} has been deleted')
 
     def show_transaction_by_id(self):

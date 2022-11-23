@@ -62,7 +62,7 @@ class Employee:
     def login(cls, username, password):
         '''
             Logs user in.
-            return logged employee.
+            Return logged employee.
         '''
         employee = Employee(**auth.login(username, password))
 
@@ -118,11 +118,12 @@ class Employee:
         '''
             Print out a product's information which the employee has access to
         '''
-        query_columns = {column:product[column] for column in self._get_query_columns()}
+        query_columns = self._get_query_columns()
+        query_columns = {column:product[column] for column in query_columns}
 
         row = "{:<20}"*len(query_columns) # Template for string formatting
-        print(row.format(*map(str, query_columns)))
-        print(row.format(*map(str, query_columns.values())))
+        print(row.format(*map(str, query_columns))) # Print column header
+        print(row.format(*map(str, query_columns.values()))) # Print column value
     
     def show_transaction_information(self, transaction):
         '''
@@ -158,7 +159,7 @@ class Employee:
         '''
         query_columns = self._get_query_columns()
         row = "{:<20}"*len(query_columns) # Template for string formatting
-        print(row.format(*map(str, query_columns)))
+        print(row.format(*map(str, query_columns))) # Print column header
 
         # Getting catalog
         catalog = connector.get_catalog()
@@ -166,7 +167,7 @@ class Employee:
 
         # Printing all products in catalog
         for product in catalog:
-            query_columns = {column:product[column] for column in self._get_query_columns()}
+            query_columns = {column:product[column] for column in query_columns}
             print(row.format(*map(str, query_columns.values())))
 
     def show_transaction_history(self):
@@ -214,6 +215,11 @@ class Can_Edit_Catalog(ABC):
     '''
 
     def add_product(self, name, category, price, description=None):
+        '''
+            Add a new product.
+            Return the newly added product.
+        '''
+        # Privilege checking
         user_privilege = self.get_edit_privilege()
         if not user_privilege&CATALOG:
             raise PrivilegeError("User don't have catalog edit privilege")
@@ -224,7 +230,17 @@ class Can_Edit_Catalog(ABC):
         return new_product
     
     def delete_product(self, product):
-        product.available = False
+        '''
+            Delete a product.
+        '''
+        # Privilege checking
+        user_privilege = self.get_edit_privilege()
+        if not user_privilege&CATALOG:
+            raise PrivilegeError("User don't have catalog edit privilege")
+        
+        # Deleting product
+        product.available = False # Editing the available attribute essentially deletes the product from catalog
+        # Updating database
         connector.edit_product_information(**product)
     
 class Can_Edit_Product_Info(ABC):
@@ -232,6 +248,9 @@ class Can_Edit_Product_Info(ABC):
         Abstract class for implementation purpose. Needed for DRY principle
     '''
     def edit_product(self, product, name=None, category=None, price=None,  description=None):
+        '''
+            Edit a product with the given value.
+        '''
         columns_value = {
             'name':name,
             'category':category,
@@ -243,10 +262,11 @@ class Can_Edit_Product_Info(ABC):
         if not edit_columns:
             raise PrivilegeError("User don't have the privilege to edit product")
         
+        # Editing product
         for column in edit_columns:
             product[column] = columns_value[column] if columns_value[column] is not None else product[column]
 
-        
+        # Updating database
         connector.edit_product_information(**product)
 
 class Can_Do_Transaction(ABC):
@@ -273,6 +293,10 @@ class Management(Employee, Can_Edit_Catalog, Can_Edit_Product_Info, Can_Do_Trans
         Subclass of Employee in which the employee's department is Management
     '''  
     def register_account(self, username, password, name, phone_number, department, address=None):
+        '''
+            Register a new employee account with given arguments.
+            Return newly registered employee.
+        '''
         user_privilege = self.get_edit_privilege()
         if not user_privilege&REGISTRATION:
             raise PrivilegeError("User don't have the privilege to register an employee account")
