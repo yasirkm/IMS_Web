@@ -9,6 +9,9 @@ class PrivilegeError(Exception):
     pass
 
 class Employee:
+    '''
+        Class which correspond to the table employee in database
+    '''
     def __init__(self, employee_id, username, password, name, phone_number, department, address=None):
         self._employee_id = employee_id
         self._username = username
@@ -55,12 +58,21 @@ class Employee:
         self._department = department
 
     def get_info_privilege(self):
+        '''
+            Return privilege value for informations the user's department has access to
+        '''
         return INFO_PRIVILEGES[self.get_department()]
 
     def get_edit_privilege(self):
+        '''
+            Return privilege value for informations the employee's department can edit
+        '''
         return EDIT_PRIVILEGES[self.get_department()]
 
     def _get_query_columns(self):
+        '''
+            Return columns for informations the employee has access to based on their privilege
+        '''
         privilege_column = {
             PRODUCT_NAME:'name',
             PRODUCT_CATEGORY:'category',
@@ -69,11 +81,15 @@ class Employee:
             PRODUCT_DESCRIPTION:'description'
         }
         user_privilege = self.get_info_privilege()
-        queried_columns = ('product_id',)+tuple(column for privilege, column in privilege_column.items() if user_privilege&privilege)
 
-        return queried_columns
+        query_columns = ('product_id',)+tuple(column for privilege, column in privilege_column.items() if user_privilege&privilege)
+
+        return query_columns
 
     def _get_edit_columns(self):
+        '''
+            Return columns for informations the employee can edit based on their privilege
+        '''
         privilege_column = {
             PRODUCT_NAME:'name',
             PRODUCT_CATEGORY:'category',
@@ -82,19 +98,29 @@ class Employee:
             PRODUCT_DESCRIPTION:'description'
         }
         user_privilege = self.get_edit_privilege()
-        edited_columns = tuple(column for privilege, column in privilege_column.items() if user_privilege&privilege)
 
-        return edited_columns
+        edit_columns = tuple(column for privilege, column in privilege_column.items() if user_privilege&privilege)
+
+        return edit_columns
 
     def show_product_information(self, product):
-        queried_columns = {column:product[column] for column in self._get_query_columns()}
+        '''
+            Print out a product's information which the employee has access to
+        '''
+        query_columns = {column:product[column] for column in self._get_query_columns()}
 
-        row = "{:<20}"*len(queried_columns)
-        print(row.format(*map(str, queried_columns)))
-        print(row.format(*map(str, queried_columns.values())))
+        row = "{:<20}"*len(query_columns) # Template for string formatting
+        print(row.format(*map(str, query_columns)))
+        print(row.format(*map(str, query_columns.values())))
     
     def show_transaction_information(self, transaction):
-        def _show_transaction_detail():
+        '''
+            Print out the information of a transaction
+        '''
+        def _show_transaction_details():
+            '''
+                Print out the detail of the transaction
+            '''
             transaction_detail_list = connector.get_transaction_details(transaction.transaction_id)
             for transaction_detail_information in transaction_detail_list:
                 transaction_detail = Transaction_Detail(**transaction_detail_information)
@@ -113,30 +139,46 @@ class Employee:
         print(f'date_time: {transaction.date_time}')
         print()
         print('details: ')
-        _show_transaction_detail()
+        _show_transaction_details()
 
     def show_catalog(self):
-        queried_columns = self._get_query_columns()
-        row = "{:<20}"*len(queried_columns)
-        print(row.format(*map(str, queried_columns)))
+        '''
+            Print out all products available
+        '''
+        query_columns = self._get_query_columns()
+        row = "{:<20}"*len(query_columns) # Template for string formatting
+        print(row.format(*map(str, query_columns)))
 
-        catalog = connector.get_catalog(queried_columns)
+        # Getting catalog
+        catalog = connector.get_catalog(query_columns)
+
+        # Printing all products in catalog
         for values in catalog:
             print(row.format(*map(str, values)))
 
     def show_transaction_history(self):
+        '''
+            Print out transaction history
+        '''
         user_privilege = self.get_info_privilege()
-        if not user_privilege&TRANSACTION:
+        if not user_privilege&TRANSACTION: # Deny usage by raising exception
             raise PrivilegeError("User don't have the privilege to view transaction history")
 
         pad = 20
-        transactions = connector.get_transactions()
         print(f"{'transaction_id':<{pad}}{'employee_id':<{pad}}{'type':<{pad}}{'receipt_number':<{pad}}{'date':<{pad}}")
+
+        # Getting transaction history
+        transactions = connector.get_transactions()
+
+        # Printing all transactions
         for transaction in transactions:
             transaction_id, employee_id, _type, receipt_number, date = transaction
             print(f"{transaction_id:<{pad}}{employee_id:<{pad}}{_type:<{pad}}{str(receipt_number):<{pad}}{date.strftime('%Y-%m-%d %H:%M:%S'):<{pad}}")
 
     def __getitem__(self, attribute):
+        '''
+            Special method for attribute access
+        '''
         callback = {
             'employee_id':self.get_employee_id,
             'username':self.get_username,
@@ -148,9 +190,16 @@ class Employee:
         }
         return callback[attribute]()
     def keys(self):
+        '''
+            Helper method for the purpose of keyword unpacking purpose
+        '''
         return ('employee_id', 'username', 'password', 'name', 'phone_number', 'address', 'department')
     
 class Can_Edit_Catalog(ABC):
+    '''
+        Abstract class for implementation purpose. Needed for DRY principle
+    '''
+
     def add_product(self, name, category, price, description=None):
         user_privilege = self.get_edit_privilege()
         if not user_privilege&CATALOG:
@@ -166,6 +215,9 @@ class Can_Edit_Catalog(ABC):
         connector.edit_product_information(**product)
     
 class Can_Edit_Product_Info(ABC):
+    '''
+        Abstract class for implementation purpose. Needed for DRY principle
+    '''
     def edit_product(self, product, name=None, category=None, price=None,  description=None):
         columns_value = {
             'name':name,
@@ -185,6 +237,9 @@ class Can_Edit_Product_Info(ABC):
         connector.edit_product_information(**product)
 
 class Can_Do_Transaction(ABC):
+    '''
+        Abstract class for implementation purpose. Needed for DRY principle
+    '''
     def do_transaction(self, receipt_number, transaction_details, transaction_type):
         date_time = datetime.now()
         date_time = date_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -201,9 +256,9 @@ class Can_Do_Transaction(ABC):
         return new_transaction
 
 class Management(Employee, Can_Edit_Catalog, Can_Edit_Product_Info, Can_Do_Transaction):
-    # def __init__(self, employee_id, username, password, name, phone_number, department, address=None):
-    #     Employee.__init__(employee_id, username, password, name, phone_number, department, address)
-        
+    '''
+        Subclass of Employee in which the employee's department is Management
+    '''  
     def register_account(self, username, password, name, phone_number, department, address=None):
         user_privilege = self.get_edit_privilege()
         if not user_privilege&REGISTRATION:
@@ -214,12 +269,21 @@ class Management(Employee, Can_Edit_Catalog, Can_Edit_Product_Info, Can_Do_Trans
         return new_employee
     
 class Storage(Employee, Can_Edit_Catalog, Can_Edit_Product_Info, Can_Do_Transaction):
+    '''
+        Subclass of Employee in which the employee's department is Storage
+    '''  
     pass
 
 class Finance(Employee, Can_Edit_Product_Info):
+    '''
+        Subclass of Employee in which the employee's department is Finance
+    '''  
     pass
 
 class Transaction:
+    '''
+        Class which correspond to the table transaction in database
+    '''
     def __init__(self, transaction_id, employee_id, type, date_time, receipt_number=None):
         self.transaction_id = transaction_id
         self.employee_id = employee_id
@@ -267,13 +331,17 @@ class Transaction:
         self._date_time = value
 
 class Product:
-    def __init__(self, product_id, name, category, price=0, stock=0, description=None):
+    '''
+        Class which correspond to the table product in database
+    '''
+    def __init__(self, product_id, name, category, price=0, stock=0, description=None, available=True):
         self.product_id = product_id
         self.name = name
         self.category = category
         self.price = price
         self.stock = stock
         self.description = description
+        self.available=None
 
     @property
     def product_id(self):
@@ -323,19 +391,42 @@ class Product:
     def description(self, value):
         self._description = value
 
+    @property
+    def available(self):
+        return self._available
+    
+    @available.setter
+    def available(self, value):
+        self._available = value
+
     def __iter__(self):
+        '''
+            Helper method for unpacking purpose
+        '''
         return iter((self.product_id, self.name, self.category, self.price, self.stock, self.description))
 
     def __getitem__(self, attribute):
+        '''
+            Special method for attribute access
+        '''
         return getattr(self, attribute)
 
     def __setitem__(self, attribute, value):
+        '''
+            Special method for attribute assignment
+        '''
         setattr(self, attribute, value)
 
     def keys(self):
+        '''
+            Helper method for keyword unpacking purpose
+        '''
         return ('product_id', 'name', 'category', 'price', 'stock', 'description', 'available')
 
 class Transaction_Detail:
+    '''
+        Class which correspond to the table transaction_detail in database
+    '''
     def __init__(self, transaction_id, product_id, quantity):
         self._transaction_id = transaction_id
         self._product_id = product_id

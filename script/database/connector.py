@@ -3,6 +3,10 @@ import psycopg2
 from config import postgre_config
 from privileges import *
 
+
+'''
+    An interface for the purpose of communicating with the database
+'''
 class TableNotFoundError(Exception):
     pass
 
@@ -13,6 +17,10 @@ TRANSACTIONS = (IN, OUT)
 CONNECTION_PARAMS = postgre_config()
 
 def add_product(name, category, price, description):
+    '''
+        Add a new record to product table.
+        Return product_id of added product.
+    '''
 
     sql_statement = 'INSERT INTO product(name, category, price, stock, description, available) VALUES(%s,%s,%s,%s,%s,%s) RETURNING product_id;'
 
@@ -31,7 +39,8 @@ def add_product(name, category, price, description):
 
 def transact(employee_id, receipt_number, transaction_details, transaction_type, date_time):
     '''
-        Do a transaction. Update the database in accordance to transaction details and transaction type
+        Do a transaction. Update the database in accordance to transaction details and transaction type.
+        Return transaction_id of transaction done.
         
         transaction_details: a tuple of product_id an its quantity
         transaction_type: IN or OUT
@@ -49,7 +58,7 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
 
     def _add_transaction_detail(transaction_id, product_id, quantity):
         '''
-            Insert a transaction detail
+            add a new record for transaction_detail.
         '''
 
         sql_statement = 'INSERT INTO transaction_detail(transaction_id, product_id, quantity) VALUES(%s, %s, %s)'
@@ -57,7 +66,8 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
 
     def _add_transaction_record(employee_id, receipt_number, transaction_type, date_time):
         '''
-            Insert a transaction record and return its transaction_id
+            add a new record for transaction.
+            Return transaction_id of the added transaction
         '''
         sql_statement = 'INSERT INTO transaction(employee_id, type, receipt_number, date_time) VALUES(%s, %s, %s, %s) RETURNING transaction_id'
 
@@ -72,6 +82,7 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
 
     transaction_id = _add_transaction_record(employee_id, receipt_number, transaction_type, date_time)
 
+    # Adding transaction_detail record for each transaction_details
     for product_id, quantity in transaction_details:
         _add_transaction_detail(transaction_id, product_id, quantity)
         quantity = -quantity if transaction_type == OUT else quantity
@@ -82,7 +93,10 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
     connection.close()
     return transaction_id
 
-def get_product_information(product_id, columns=('product_id', 'name', 'category', 'price', 'stock', 'description')):
+def get_product_information(product_id, columns=('product_id', 'name', 'category', 'price', 'stock', 'description', 'available')):
+    '''
+        Return an attribute dictionary of product with the product_id in database.
+    '''
 
     sql_statement = f'SELECT {", ".join(columns)} FROM product WHERE product_id=%s'
 
@@ -91,6 +105,8 @@ def get_product_information(product_id, columns=('product_id', 'name', 'category
     cursor.execute(sql_statement, (product_id,))
 
     column_values = cursor.fetchone()
+
+    # Raise an exception if query results in None
     if column_values is None:
         raise TableNotFoundError(f'The product with the id of {product_id} could not be found in the database')
 
@@ -102,7 +118,9 @@ def get_product_information(product_id, columns=('product_id', 'name', 'category
     return product_information
 
 def get_transaction_information(transaction_id, columns=('transaction_id', 'employee_id', 'type', 'receipt_number', 'date_time')):
-
+    '''
+        Return an attribute dictionary of transaction with the transaction_id in database.
+    '''
     sql_statement = f'SELECT {", ".join(columns)} FROM transaction WHERE transaction_id=%s'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
@@ -110,6 +128,8 @@ def get_transaction_information(transaction_id, columns=('transaction_id', 'empl
     cursor.execute(sql_statement, (transaction_id,))
 
     column_values = cursor.fetchone()
+
+    # Raise an exception if query results in None
     if column_values is None:
         raise TableNotFoundError(f'The transaction with the id of {transaction_id} could not be found in the database')
 
@@ -121,6 +141,9 @@ def get_transaction_information(transaction_id, columns=('transaction_id', 'empl
     return transaction_information
 
 def get_transaction_details(transaction_id, columns=('transaction_id', 'product_id', 'quantity')):
+    '''
+        Return a list of attribute dictionary of transaction_details with the transaction_id in database.
+    '''
     sql_statement = f'SELECT {", ".join(columns)} FROM transaction_detail WHERE transaction_id=%s'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
@@ -129,8 +152,12 @@ def get_transaction_details(transaction_id, columns=('transaction_id', 'product_
 
     transaction_detail_list = []
     result = cursor.fetchall()
+    # Raise an exception if query results in None
+
     if result is None:
         raise TableNotFoundError(f'The transaction with the id of {transaction_id} could not be found in the database')
+    
+    # Creating list of transaction details
     for values in result:
         transaction_detail = {column:value for column, value in zip(columns, values)}
         transaction_detail_list.append(transaction_detail)
@@ -141,7 +168,9 @@ def get_transaction_details(transaction_id, columns=('transaction_id', 'product_
     return transaction_detail_list
 
 def get_catalog(columns=('product_id', 'name', 'category', 'price', 'stock', 'description')):
-
+    '''
+        Return a list of attribute dictionary of available product in database.
+    '''
     sql_statement = f'SELECT {", ".join(columns)} FROM product WHERE available IS TRUE ORDER BY product_id'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
@@ -156,6 +185,9 @@ def get_catalog(columns=('product_id', 'name', 'category', 'price', 'stock', 'de
     return catalog
 
 def get_transactions(columns=('transaction_id', 'employee_id', 'type', 'receipt_number', 'date_time')):
+    '''
+        Return a list of attribute dictionary of transactions in database
+    '''
     sql_statement = f"SELECT {', '.join(columns)} FROM transaction ORDER BY transaction_id"
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
@@ -170,7 +202,11 @@ def get_transactions(columns=('transaction_id', 'employee_id', 'type', 'receipt_
     return transactions
 
 def edit_product_information(product_id, name=None, category=None, description=None, stock=None, price=None, available=None):
-    attribute_edit_value = {
+    '''
+        Edit the information of product with given value.
+    '''
+
+    attribute_edit_value = { # Maps attribute with parameter
         'name':name,
         'category':category,
         'description':description,
@@ -178,7 +214,9 @@ def edit_product_information(product_id, name=None, category=None, description=N
         'stock':stock,
         'available':available
     }
+    # Filtering un-edited attribute
     edit_attributes = [attribute for attribute in attribute_edit_value if attribute_edit_value[attribute] is not None]
+
     sql_statement = f'UPDATE product SET {", ".join(f"{attribute}=%s" for attribute in edit_attributes)} WHERE product_id=%s'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
@@ -189,6 +227,10 @@ def edit_product_information(product_id, name=None, category=None, description=N
     connection.close()
 
 def register(username, password, name, phone_number, address, department):
+    '''
+        Add a new record for employee table in database.
+        Return employee_id of added employee.
+    '''
     sql_statement = 'INSERT INTO employee(username, password, name, phone_number, address, department) VALUES(%s,%s,%s,%s,%s,%s) RETURNING employee_id;'
 
     params = postgre_config()

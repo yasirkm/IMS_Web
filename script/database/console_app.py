@@ -27,13 +27,22 @@ class AbortOperation(Exception):
     pass
 
 class Menu:
+    '''
+        Menu for console app.
+    '''
+
     def __init__(self):
+        '''
+            Logs user in.
+        '''
         user = None
         department_class = {
             'Management':Management,
             'Finance':Finance,
             'Storage':Storage
         }
+
+        # Logging in
         while not user:
             username = input("Username: ")
             password = getpass()
@@ -42,6 +51,8 @@ class Menu:
             except auth.AuthenticationError as exc:
                 os.system('cls')
                 print(str(exc))
+
+        # Sublass casting
         try:
             type_cast = department_class[user.get_department()]
             user = type_cast(**user)
@@ -52,6 +63,10 @@ class Menu:
         self.selections = None
 
     def add_product(self):
+        '''
+            Procedure for adding a product.
+        '''
+        # Asking for input
         name = input('Product name: ')
         name = None if name == '' else name
         category = input('Product category: ')
@@ -65,6 +80,7 @@ class Menu:
         except ValueError:
             raise AbortOperation('The specified product price is invalid')
 
+        # Adding new product
         try:
             new_product = self.user.add_product(name=name, category=category, description=description, price=price)
         except PrivilegeError:
@@ -75,12 +91,20 @@ class Menu:
         print(f"{new_product.name} has been added with the id of {new_product.product_id}")
 
     def show_catalog(self):
+        '''
+            Print out list of products
+        '''
         try:
             self.user.show_catalog()
         except PrivilegeError as exc:
             raise AbortOperation(str(exc)) from exc
 
     def show_product_by_id(self):
+        '''
+            Procedure for showing product information by its id.
+        '''
+
+        # Asking for input
         product_id = None
         while product_id is None:
             try:
@@ -88,32 +112,43 @@ class Menu:
             except ValueError:
                 print("That product id is not valid!")
 
+        # Getting the product
         try:
             product = Product(**connector.get_product_information(product_id))
         except connector.TableNotFoundError as exc:
             raise AbortOperation("That product doesn't exist") from exc
 
+        # Showing product information
         try:
             self.user.show_product_information(product)
         except PrivilegeError as exc:
             raise AbortOperation(str(exc)) from exc
 
     def edit_product(self):
+        '''
+            Procedure for editing a product.
+        '''
+
+        # Asking for product id
         try:
             product_id = int(input("product id: "))
         except ValueError as exc:
             raise AbortOperation("product id is not valid!") from exc
 
+        # Getting product
         try:
             product = Product(**connector.get_product_information(product_id))
         except connector.TableNotFoundError as exc:
             raise AbortOperation(f"the product with the id of {product_id} doesn't exist") from exc
 
+        # Showing un-edited information of product
         try:
             self.user.show_product_information(product)
         except PrivilegeError as exc:
             raise AbortOperation(str(exc)) from exc
 
+        # Asking for new value
+        print('Input new value for each attribute (Leave empty to not edit): ')
         name = input('Product name: ')
         name = None if name=='' else name
         category = input('Product category: ')
@@ -121,14 +156,17 @@ class Menu:
         description = input('Product description: ')
         description = None if description=='' else description
         try:
-            price = int(input('Product price: '))
+            price = input('Product price: ')
             if price != '':
                 price = int(price)
                 if price < 0:
                     raise AbortOperation("The product price can't be negative")
+            else:
+                price = None
         except ValueError:
             raise AbortOperation('The specified product price is invalid')
 
+        # Editing product
         try:
             self.user.edit_product(product, name=name, category=category, description=description, price=price)
         except PrivilegeError as exc:
@@ -137,22 +175,33 @@ class Menu:
         print(f'Product with the id of {product.product_id} has been edited')
         
     def delete_product_by_id(self):
+        '''
+            Procedure for deleting a product.
+        '''
+
+        # Asking for product id
         try:
             product_id = int(input("product id: "))
         except ValueError as exc:
             raise AbortOperation("product id is not valid!") from exc
 
+        # Getting product
         try:
             product = Product(**connector.get_product_information(product_id))
         except connector.TableNotFoundError as exc:
             raise AbortOperation(f"the product with the id of {product_id} doesn't exist") from exc
         
+        # Deleting product
         product.available = False
-        connector.edit_product_information(**product)
-        print(f'Product with the if of {product.product_id} has been deleted')
-
+        connector.edit_product_information(**product) # Editing the available attribute essentially deletes the product from catalog
+        print(f'Product with the id of {product.product_id} has been deleted')
 
     def show_transaction_by_id(self):
+        '''
+            Procedure for showing transaction information by its id
+        '''
+
+        # Asking for transaction id
         transaction_id = None
         while transaction_id is None:
             try:
@@ -160,23 +209,33 @@ class Menu:
             except ValueError:
                 print("That transaction id is not valid!")
 
+        # Getting transaction
         try:
             transaction = Transaction(**connector.get_transaction_information(transaction_id))
         except connector.TableNotFoundError as exc:
             raise AbortOperation("That transaction doesn't exist") from exc
         
+        # Showing transaction informations
         try:
             self.user.show_transaction_information(transaction)
         except PrivilegeError as exc:
             raise AbortOperation(str(exc)) from exc
             
     def show_transactions(self):
+        '''
+            Print out transaction history.
+        '''
         try:
             self.user.show_transaction_history()
         except PrivilegeError:
             print("You don't have the privilege to view transaction history")
     
     def do_transaction(self):
+        '''
+            Procedure for adding a new transaction
+        '''
+
+        # Asking for input
         transaction_type = input("Transaction type [IN/OUT]: ")
         if transaction_type not in connector.TRANSACTIONS:
             raise AbortOperation('The specified type of transaction is not supported')
@@ -191,6 +250,7 @@ class Menu:
         except ValueError as exc:
             raise AbortOperation("The specified number of product is invalid") from exc
 
+        # Asking for transaction details
         transaction_details = []
         for _ in range(num_of_product):
             try:
@@ -208,6 +268,7 @@ class Menu:
                 raise AbortOperation(f"The specified quantity for product with the id of {product_id} is invalid") from exc
             transaction_details.append((product_id, quantity))
 
+        # Adding new transaction
         try:
             new_transaction = self.user.do_transaction(receipt_number, transaction_details, transaction_type)
         except psycopg2.errors.ForeignKeyViolation as exc:
@@ -218,6 +279,10 @@ class Menu:
         print(f"A new transaction of type {new_transaction.type} has been added with the id of {new_transaction.transaction_id} at {new_transaction.date_time}")
 
     def register(self):
+        '''
+            Procedure for registering a new employee.
+        '''
+        # Asking for input
         username = input('Username: ')
         username = None if username == '' else username
         password = getpass()
@@ -231,6 +296,7 @@ class Menu:
         department = input('Department: ')
         department = None if department == '' else department
 
+        # Registering new employee
         try:
             new_employee = self.user.register_account(username=username, password=password, name=name, phone_number=phone_number, address=address, department=department)
         except psycopg2.errors.UniqueViolation as exc:
@@ -244,6 +310,11 @@ class Menu:
         print(f'User with the username {new_employee.get_username()} has been added with the id of {new_employee.get_employee_id()}')
 
     def select(self):
+        '''
+            Print and execute available menu selection
+        '''
+
+        # Creating selections
         if self.selections is None:
             self.selections = {
             'Show catalog' : self.show_catalog,
@@ -270,14 +341,16 @@ class Menu:
                 self.selections.update(
                     {'Register user' : self.register}
                 )
+        
         print(f'Logged in as {self.user.get_name()} from {self.user.get_department()} department')
 
+        # Printing available selections
         selection_list = list(self.selections)
-
         print("Procedures: ")
         for idx, selection in enumerate(selection_list, 1):
             print(f'{idx}. {selection}')
 
+        # Asking for selection
         selected = None
         while selected is None:
             try:
@@ -287,10 +360,9 @@ class Menu:
 
         os.system('cls')
         
+        # Executing selected procedure
         selected = selection_list[selected]
-
         procedure = self.selections[selected]
-
         procedure()
 
 if __name__ == '__main__':
