@@ -5,9 +5,9 @@ from getpass import getpass
 
 import psycopg2.errors
 
-from table import Employee, Product, Transaction, Transaction_Detail, PrivilegeError, Management, Finance, Storage, Can_Do_Transaction, Can_Edit_Catalog, Can_Edit_Product_Info
-import connector
-import auth
+from database.table import Employee, Product, Transaction, Transaction_Detail, PrivilegeError, Management, Finance, Storage, Can_Do_Transaction, Can_Edit_Catalog, Can_Edit_Product_Info
+import database.connector as connector
+import database.auth as auth
 
 def main():
     try:

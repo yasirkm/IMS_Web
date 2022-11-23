@@ -1,10 +1,10 @@
 from datetime import datetime
 from abc import ABC
 
-import connector
+import database.connector as connector
+import database.auth as auth
 
-from privileges import *
-import auth
+from database.privileges import *
 
 class PrivilegeError(Exception):
     pass

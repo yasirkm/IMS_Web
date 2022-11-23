@@ -1,7 +1,7 @@
 import psycopg2
 
-from config import postgre_config
-from privileges import *
+from database.config import postgre_config
+from database.privileges import *
 
 
 '''

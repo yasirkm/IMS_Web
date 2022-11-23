@@ -1,6 +1,6 @@
-from config import postgre_config
-import connector
 import psycopg2
+
+from database.config import postgre_config
 
 class AuthenticationError(Exception):
     pass
