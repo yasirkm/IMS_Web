@@ -1,4 +1,5 @@
 from datetime import datetime
+from abc import ABC
 
 import connector
 
@@ -58,21 +59,6 @@ class Employee:
 
     def get_edit_privilege(self):
         return EDIT_PRIVILEGES[self.get_department()]
-
-    def add_product(self, name, category, price, description=None):
-        user_privilege = self.get_edit_privilege()
-        if not user_privilege&CATALOG:
-            raise PrivilegeError("User don't have catalog edit privilege")
-        
-        product_id=connector.add_product(name=name, category=category, price=price, description=description)
-        new_product = Product(product_id=product_id, name=name, category=category, price=price, description=description)
-        
-        return new_product
-    
-    def delete_product(self, product):
-        product.available = False
-        connector.edit_product_information(**product)
-        return product
 
     def _get_query_columns(self):
         privilege_column = {
@@ -150,30 +136,36 @@ class Employee:
             transaction_id, employee_id, _type, receipt_number, date = transaction
             print(f"{transaction_id:<{pad}}{employee_id:<{pad}}{_type:<{pad}}{str(receipt_number):<{pad}}{date.strftime('%Y-%m-%d %H:%M:%S'):<{pad}}")
 
-    def register_account(self, username, password, name, phone_number, department, address=None):
+    def __getitem__(self, attribute):
+        callback = {
+            'employee_id':self.get_employee_id,
+            'username':self.get_username,
+            'password':self.get_password,
+            'name':self.get_name,
+            'phone_number':self.get_phone_number,
+            'address':self.get_address,
+            'department':self.get_department
+        }
+        return callback[attribute]()
+    def keys(self):
+        return ('employee_id', 'username', 'password', 'name', 'phone_number', 'address', 'department')
+class Can_Edit_Catalog(ABC):
+    def add_product(self, name, category, price, description=None):
         user_privilege = self.get_edit_privilege()
-        if not user_privilege&REGISTRATION:
-            raise PrivilegeError("User don't have the privilege to register an employee account")
-
-        employee_id = connector.register(username=username, password=password, name=name, phone_number=phone_number, department=department, address=address)
-        new_employee = Employee(employee_id=employee_id, username=username, password=password, name=name, phone_number=phone_number, department=department, address=address)
-        return new_employee
-
-    def do_transaction(self, receipt_number, transaction_details, transaction_type):
-        date_time = datetime.now()
-        date_time = date_time.strftime('%Y-%m-%d %H:%M:%S')
-        employee_id = self.get_employee_id()
-        user_privilege = self.get_edit_privilege()
-
-        if not user_privilege%TRANSACTION:
-            raise PrivilegeError("User don't have the privilge to do transaction")
+        if not user_privilege&CATALOG:
+            raise PrivilegeError("User don't have catalog edit privilege")
         
-        transaction_id = connector.transact(employee_id, receipt_number, transaction_details, transaction_type, date_time)
-
-        new_transaction = Transaction(transaction_id, employee_id, transaction_type, date_time, receipt_number)
-
-        return new_transaction
-
+        product_id=connector.add_product(name=name, category=category, price=price, description=description)
+        new_product = Product(product_id=product_id, name=name, category=category, price=price, description=description)
+        
+        return new_product
+    
+    def delete_product(self, product):
+        product.available = False
+        connector.edit_product_information(**product)
+        return product
+    
+class Can_Edit_Product_Info(ABC):
     def edit_product(self, product, name=None, category=None, price=None,  description=None):
         columns_value = {
             'name':name,
@@ -192,7 +184,41 @@ class Employee:
         
         connector.edit_product_information(product_id=product.product_id, name=product.name, category=product.category, price=product.price, description=product.description)
 
+class Can_Do_Transaction(ABC):
+    def do_transaction(self, receipt_number, transaction_details, transaction_type):
+        date_time = datetime.now()
+        date_time = date_time.strftime('%Y-%m-%d %H:%M:%S')
+        employee_id = self.get_employee_id()
+        user_privilege = self.get_edit_privilege()
+
+        if not user_privilege%TRANSACTION:
+            raise PrivilegeError("User don't have the privilge to do transaction")
+        
+        transaction_id = connector.transact(employee_id, receipt_number, transaction_details, transaction_type, date_time)
+
+        new_transaction = Transaction(transaction_id, employee_id, transaction_type, date_time, receipt_number)
+
+        return new_transaction
+
+class Management(Employee, Can_Edit_Catalog, Can_Edit_Product_Info, Can_Do_Transaction):
+    # def __init__(self, employee_id, username, password, name, phone_number, department, address=None):
+    #     Employee.__init__(employee_id, username, password, name, phone_number, department, address)
+        
+    def register_account(self, username, password, name, phone_number, department, address=None):
+        user_privilege = self.get_edit_privilege()
+        if not user_privilege&REGISTRATION:
+            raise PrivilegeError("User don't have the privilege to register an employee account")
+
+        employee_id = connector.register(username=username, password=password, name=name, phone_number=phone_number, department=department, address=address)
+        new_employee = Employee(employee_id=employee_id, username=username, password=password, name=name, phone_number=phone_number, department=department, address=address)
+        return new_employee
     
+class Storage(Employee, Can_Edit_Catalog, Can_Edit_Product_Info, Can_Do_Transaction):
+    pass
+
+class Finance(Employee, Can_Edit_Product_Info):
+    pass
+
 class Transaction:
     def __init__(self, transaction_id, employee_id, type, date_time, receipt_number=None):
         self.transaction_id = transaction_id
@@ -239,7 +265,6 @@ class Transaction:
     @date_time.setter
     def date_time(self, value):
         self._date_time = value
-
 
 class Product:
     def __init__(self, product_id, name, category, price=0, stock=0, description=None):
