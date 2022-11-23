@@ -47,7 +47,7 @@ class Menu:
             username = input("Username: ")
             password = getpass()
             try:
-                user = Employee(**auth.login(username, password))
+                user = Employee.login(username, password)
             except auth.AuthenticationError as exc:
                 os.system('cls')
                 print(str(exc))

@@ -4,6 +4,7 @@ from abc import ABC
 import connector
 
 from privileges import *
+import auth
 
 class PrivilegeError(Exception):
     pass
@@ -56,6 +57,16 @@ class Employee:
 
     def set_department(self, department):
         self._department = department
+
+    @classmethod
+    def login(cls, username, password):
+        '''
+            Logs user in.
+            return logged employee.
+        '''
+        employee = Employee(**auth.login(username, password))
+
+        return employee
 
     def get_info_privilege(self):
         '''
