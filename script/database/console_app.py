@@ -3,7 +3,7 @@ import os
 
 import psycopg2.errors
 
-from table import Employee, Product, Transaction, Transaction_Detail, PrivilegeError
+from table import Employee, Product, Transaction, Transaction_Detail, PrivilegeError, Management, Finance, Storage, Can_Do_Transaction, Can_Edit_Catalog, Can_Edit_Product_Info
 import connector
 import auth
 
@@ -25,16 +25,28 @@ class AbortOperation(Exception):
 class Menu:
     def __init__(self):
         user = None
+        department_class = {
+            'Management':Management,
+            'Finance':Finance,
+            'Storage':Storage
+        }
         while not user:
             username = input("Username: ")
             password = getpass()
             try:
-                user = auth.login(username, password)
+                user = Employee(**auth.login(username, password))
             except auth.AuthenticationError as exc:
                 print(str(exc))
             finally:
                 os.system('cls')
-        self.user = Employee(**user)
+        try:
+            type_cast = department_class[user.get_department()]
+            user = type_cast(**user)
+        except KeyError:
+            pass
+
+        self.user = user
+        self.selections = None
 
     def add_product(self):
         name = input('Product name: ')
@@ -207,19 +219,33 @@ class Menu:
 
 
         print(f'User with the username {new_employee.get_username()} has been added with the id of {new_employee.get_employee_id()}')
-            
-    selections = {
-        'Show catalog' : show_catalog,
-        'Show transactions' : show_transactions,
-        'Show product by id' : show_product_by_id,
-        'Show transaction by id' : show_transaction_by_id,
-        'Add new product': add_product,
-        'Do transaction' : do_transaction,
-        'Edit product by id': edit_product,
-        'Register user' : register
-    }
 
     def select(self):
+        if self.selections is None:
+            self.selections = {
+            'Show catalog' : self.show_catalog,
+            'Show transactions' : self.show_transactions,
+            'Show product by id' : self.show_product_by_id,
+            'Show transaction by id' : self.show_transaction_by_id
+            } 
+            if isinstance(self.user, Can_Edit_Product_Info):
+                self.selections.update(
+                    {'Edit product by id': self.edit_product}
+                )
+            if isinstance(self.user, Can_Edit_Catalog):
+                self.selections.update(
+                    {
+                        'Add new product': self.add_product
+                    }
+                )
+            if isinstance(self.user, Can_Do_Transaction):
+                self.selections.update(
+                    {'Do transaction' : self.do_transaction}
+                )
+            if isinstance(self.user, Management):
+                self.selections.update(
+                    {'Register user' : self.register}
+                )
         print(f'Logged in as {self.user.get_name()} from {self.user.get_department()} department')
 
         selection_list = list(self.selections)
@@ -241,7 +267,7 @@ class Menu:
 
         procedure = self.selections[selected]
 
-        procedure(self)
+        procedure()
 
 if __name__ == '__main__':
     main()
