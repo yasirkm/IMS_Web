@@ -150,11 +150,13 @@ class Employee:
         print(row.format(*map(str, query_columns)))
 
         # Getting catalog
-        catalog = connector.get_catalog(query_columns)
+        catalog = connector.get_catalog()
+        catalog = (Product(**product) for product in catalog)
 
         # Printing all products in catalog
-        for values in catalog:
-            print(row.format(*map(str, values)))
+        for product in catalog:
+            query_columns = {column:product[column] for column in self._get_query_columns()}
+            print(row.format(*map(str, query_columns.values())))
 
     def show_transaction_history(self):
         '''
@@ -169,11 +171,11 @@ class Employee:
 
         # Getting transaction history
         transactions = connector.get_transactions()
+        transactions = (Transaction(**transaction) for transaction in transactions)
 
         # Printing all transactions
         for transaction in transactions:
-            transaction_id, employee_id, _type, receipt_number, date = transaction
-            print(f"{transaction_id:<{pad}}{employee_id:<{pad}}{_type:<{pad}}{str(receipt_number):<{pad}}{date.strftime('%Y-%m-%d %H:%M:%S'):<{pad}}")
+            print(f"{transaction.transaction_id:<{pad}}{transaction.employee_id:<{pad}}{transaction.type:<{pad}}{transaction.receipt_number:<{pad}}{transaction.date_time.strftime('%Y-%m-%d %H:%M:%S'):<{pad}}")
 
     def __getitem__(self, attribute):
         '''
@@ -329,6 +331,18 @@ class Transaction:
     @date_time.setter
     def date_time(self, value):
         self._date_time = value
+
+    def __getitem__(self, attribute):
+        '''
+            Special method for attribute access
+        '''
+        return getattr(self, attribute)
+    
+    def keys(self):
+        '''
+            Helper method for keyword unpacking purpose
+        '''
+        return ('transaction_id', 'employee_id', 'type', 'receipt_number', 'date_time')
 
 class Product:
     '''

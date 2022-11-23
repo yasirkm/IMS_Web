@@ -177,7 +177,11 @@ def get_catalog(columns=('product_id', 'name', 'category', 'price', 'stock', 'de
     cursor = connection.cursor()
     cursor.execute(sql_statement)
 
-    catalog=cursor.fetchall()
+    result=cursor.fetchall()
+
+    catalog = []
+    for product_information in result:
+        catalog.append({column:value for column, value in zip(columns, product_information)})
 
     cursor.close()
     connection.close()
@@ -194,7 +198,11 @@ def get_transactions(columns=('transaction_id', 'employee_id', 'type', 'receipt_
     cursor = connection.cursor()
     cursor.execute(sql_statement)
 
-    transactions = cursor.fetchall()
+    result = cursor.fetchall()
+
+    transactions = []
+    for transaction_information in result:
+        transactions.append({column:value for column, value in zip(columns, transaction_information)})
 
     cursor.close()
     connection.close()
