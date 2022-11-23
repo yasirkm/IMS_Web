@@ -28,16 +28,6 @@ def add_product(name, category, price, description):
 
     return product_id
 
-def _update_product_stock_by(product_id, quantity):
-    sql_statement = "UPDATE product SET stock=stock+%s WHERE product_id=%s;"
-
-    connection = psycopg2.connect(**CONNECTION_PARAMS)
-    cursor = connection.cursor()
-    cursor.execute(sql_statement, (quantity, product_id))
-
-    cursor.close()
-    connection.commit()
-    connection.close()
 
 def transact(employee_id, receipt_number, transaction_details, transaction_type, date_time):
     '''
@@ -46,6 +36,16 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
         transaction_details: a tuple of product_id an its quantity
         transaction_type: IN or OUT
     '''
+    def _update_product_stock_by(product_id, quantity):
+        sql_statement = "UPDATE product SET stock=stock+%s WHERE product_id=%s;"
+
+        connection = psycopg2.connect(**CONNECTION_PARAMS)
+        cursor = connection.cursor()
+        cursor.execute(sql_statement, (quantity, product_id))
+
+        cursor.close()
+        connection.commit()
+        connection.close()
 
     def _add_transaction_detail(transaction_id, product_id, quantity):
         '''
@@ -169,12 +169,13 @@ def get_transactions(columns=('transaction_id', 'employee_id', 'type', 'receipt_
 
     return transactions
 
-def edit_product_information(product_id, name=None, category=None, description=None, price=None, available=None):
+def edit_product_information(product_id, name=None, category=None, description=None, stock=None, price=None, available=None):
     attribute_edit_value = {
         'name':name,
         'category':category,
         'description':description,
         'price':price,
+        'stock':stock,
         'available':available
     }
     edit_attributes = [attribute for attribute in attribute_edit_value if attribute_edit_value[attribute] is not None]

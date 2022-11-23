@@ -332,7 +332,7 @@ class Product:
     def __setitem__(self, attribute, value):
         setattr(self, attribute, value)
 
-    def keys():
+    def keys(self):
         return ('product_id', 'name', 'category', 'price', 'stock', 'description', 'available')
 
 class Transaction_Detail:

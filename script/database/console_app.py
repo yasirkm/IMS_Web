@@ -119,8 +119,10 @@ class Menu:
         description = None if description=='' else description
         try:
             price = int(input('Product price: '))
-            if price < 0:
-                raise AbortOperation("The product price can't be negative")
+            if price != '':
+                price = int(price)
+                if price < 0:
+                    raise AbortOperation("The product price can't be negative")
         except ValueError:
             raise AbortOperation('The specified product price is invalid')
 
@@ -128,6 +130,24 @@ class Menu:
             self.user.edit_product(product, name=name, category=category, description=description, price=price)
         except PrivilegeError as exc:
             raise AbortOperation(str(exc)) from exc
+        
+        print(f'Product with the id of {product.product_id} has been edited')
+        
+    def delete_product_by_id(self):
+        try:
+            product_id = int(input("product id: "))
+        except ValueError as exc:
+            raise AbortOperation("product id is not valid!") from exc
+
+        try:
+            product = Product(**connector.get_product_information(product_id))
+        except connector.TableNotFoundError as exc:
+            raise AbortOperation(f"the product with the id of {product_id} doesn't exist") from exc
+        
+        product.available = False
+        connector.edit_product_information(**product)
+        print(f'Product with the if of {product.product_id} has been deleted')
+
 
     def show_transaction_by_id(self):
         transaction_id = None
@@ -235,7 +255,8 @@ class Menu:
             if isinstance(self.user, Can_Edit_Catalog):
                 self.selections.update(
                     {
-                        'Add new product': self.add_product
+                        'Add new product': self.add_product,
+                        'delete product by id': self.delete_product_by_id
                     }
                 )
             if isinstance(self.user, Can_Do_Transaction):

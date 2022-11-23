@@ -32,11 +32,11 @@ CREATE TABLE transaction_detail (
     quantity INTEGER NOT NULL
 );
 
-INSERT INTO product(name, category, price, stock, description)
-VALUES('Guling', 'Kamar', 30000, 3, 'Bantal guling untuk tidur');
+INSERT INTO product(name, category, price, stock, description, available)
+VALUES('Guling', 'Kamar', 30000, 3, 'Bantal guling untuk tidur', TRUE);
 
-INSERT INTO product(name, category, price, stock, description)
-VALUES('Selimut', 'Kamar', 100000, 1, 'Selimut untuk kasur');
+INSERT INTO product(name, category, price, stock, description, available)
+VALUES('Selimut', 'Kamar', 100000, 1, 'Selimut untuk kasur', TRUE);
 
 INSERT INTO employee(username, password, name, phone_number, address, department)
 VALUES('eric', 'hahaha', 'Eric Nur', '08122121212', 'Bandung', 'Management');
