@@ -68,6 +68,11 @@ class Employee:
         new_product = Product(product_id=product_id, name=name, category=category, price=price, description=description)
         
         return new_product
+    
+    def delete_product(self, product):
+        product.available = False
+        connector.edit_product_information(**product)
+        return product
 
     def _get_query_columns(self):
         privilege_column = {
@@ -301,6 +306,9 @@ class Product:
 
     def __setitem__(self, attribute, value):
         setattr(self, attribute, value)
+
+    def keys():
+        return ('product_id', 'name', 'category', 'price', 'stock', 'description', 'available')
 
 class Transaction_Detail:
     def __init__(self, transaction_id, product_id, quantity):

@@ -14,11 +14,11 @@ CONNECTION_PARAMS = postgre_config()
 
 def add_product(name, category, price, description):
 
-    sql_statement = 'INSERT into product(name, category, price, stock, description) VALUES(%s,%s,%s,0,%s) RETURNING product_id;'
+    sql_statement = 'INSERT INTO product(name, category, price, stock, description, available) VALUES(%s,%s,%s,%s,%s,%s) RETURNING product_id;'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
-    cursor.execute(sql_statement, (name, category, price, description))
+    cursor.execute(sql_statement, (name, category, price, 0, description, True))
 
     product_id = cursor.fetchone()[0]
 
@@ -142,7 +142,7 @@ def get_transaction_details(transaction_id, columns=('transaction_id', 'product_
 
 def get_catalog(columns=('product_id', 'name', 'category', 'price', 'stock', 'description')):
 
-    sql_statement = f'SELECT {", ".join(columns)} FROM product ORDER BY product_id'
+    sql_statement = f'SELECT {", ".join(columns)} FROM product WHERE available IS TRUE ORDER BY product_id'
 
     connection = psycopg2.connect(**CONNECTION_PARAMS)
     cursor = connection.cursor()
@@ -169,12 +169,13 @@ def get_transactions(columns=('transaction_id', 'employee_id', 'type', 'receipt_
 
     return transactions
 
-def edit_product_information(product_id, name=None, category=None, description=None, price=None):
+def edit_product_information(product_id, name=None, category=None, description=None, price=None, available=None):
     attribute_edit_value = {
         'name':name,
         'category':category,
         'description':description,
-        'price':price
+        'price':price,
+        'available':available
     }
     edit_attributes = [attribute for attribute in attribute_edit_value if attribute_edit_value[attribute] is not None]
     sql_statement = f'UPDATE product SET {", ".join(f"{attribute}=%s" for attribute in edit_attributes)} WHERE product_id=%s'

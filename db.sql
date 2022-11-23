@@ -22,7 +22,8 @@ CREATE TABLE product (
     category TEXT NOT NULL,
     price INTEGER NOT NULL,
     stock INTEGER NOT NULL,
-    description TEXT
+    description TEXT,
+    available BOOLEAN NOT NULL
 );
 
 CREATE TABLE transaction_detail (
