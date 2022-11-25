@@ -46,19 +46,15 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
         transaction_type: 'IN' or 'OUT'
     '''
     def _update_product_stock_by(product_id, quantity):
+        '''
+            Update product stock by the given value
+        '''
         sql_statement = "UPDATE product SET stock=stock+%s WHERE product_id=%s;"
-
-        connection = psycopg2.connect(**CONNECTION_PARAMS)
-        cursor = connection.cursor()
         cursor.execute(sql_statement, (quantity, product_id))
-
-        cursor.close()
-        connection.commit()
-        connection.close()
 
     def _add_transaction_detail(transaction_id, product_id, quantity):
         '''
-            add a new record for transaction_detail.
+            Add a new record for transaction_detail.
         '''
 
         sql_statement = 'INSERT INTO transaction_detail(transaction_id, product_id, quantity) VALUES(%s, %s, %s)'
@@ -66,7 +62,7 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
 
     def _add_transaction_record(employee_id, receipt_number, transaction_type, date_time):
         '''
-            add a new record for transaction.
+            Add a new record for transaction.
             Return transaction_id of the added transaction
         '''
         sql_statement = 'INSERT INTO transaction(employee_id, type, receipt_number, date_time) VALUES(%s, %s, %s, %s) RETURNING transaction_id'
