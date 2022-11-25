@@ -274,6 +274,13 @@ class Can_Do_Transaction(ABC):
         Abstract class for implementation purpose. Needed for DRY principle
     '''
     def do_transaction(self, receipt_number, transaction_details, transaction_type):
+        '''
+            Do a transaction.
+            Return done transaction.
+
+            transaction_details: a tuple of product_id an its quantity
+            transaction_type: 'IN' or 'OUT'
+        '''
         date_time = datetime.now()
         date_time = date_time.strftime('%Y-%m-%d %H:%M:%S')
         employee_id = self.get_employee_id()

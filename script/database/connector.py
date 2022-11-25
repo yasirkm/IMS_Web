@@ -43,7 +43,7 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
         Return transaction_id of transaction done.
         
         transaction_details: a tuple of product_id an its quantity
-        transaction_type: IN or OUT
+        transaction_type: 'IN' or 'OUT'
     '''
     def _update_product_stock_by(product_id, quantity):
         sql_statement = "UPDATE product SET stock=stock+%s WHERE product_id=%s;"
