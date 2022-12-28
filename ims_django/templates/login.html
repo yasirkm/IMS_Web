@@ -1,8 +1,6 @@
-
-{% load static tailwind_tags %}
-
 <!DOCTYPE html>
 <html lang="en">
+{% load static tailwind_tags %}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,13 +8,14 @@
     <title>Login</title>
     <link href="/dist/output.css" rel="stylesheet">
     {% tailwind_css %}
+    {% load static %}
 </head>
 <!---->
 <body class="bg-gradient-to-r from-blue-500 to-[#004A98]">
     <div class="mx-auto  w-3/4 my-16 text-gray-200 ">
         <div class="  h-[500px]  relative  border-2 border-transparent  rounded-3xl ">
             <div class="w-[400px] left-0 top-[100px] absolute -z-10">
-                <img src="img/box.png" alt="box">
+                <img src="{% static 'box.png' %}" alt="box">
             </div>
             <div class=" absolute right-10 text-5xl font-semibold w-[330px] h-16 ">
                 <div class="h-24 w-24 rounded-full -left-2 -top-5 bg-[#FBBC05] absolute "></div>

@@ -15,10 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.shortcuts import redirect
 
-from employee.views import login_view
+from employee.views import *
+from transaction.views import *
+from product.views import *
 
 urlpatterns = [
+    path('', dashboard_view),
     path('admin/', admin.site.urls),
     path('login/', login_view),
+    path('register/', register_view),
+    path('management/', management_view),
+    path('choose/', choose_user_view),
+    path('transaction/', transaction_view),
+    path('catalog/', catalog_view),
 ]

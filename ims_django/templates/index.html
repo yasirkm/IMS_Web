@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static tailwind_tags %}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link href="/dist/output.css" rel="stylesheet">
+    {% tailwind_css %}
 </head>
 <body class="bg-[#004A98]">
     <button class="fixed -top-1 left-0 bg-gray-300 w-[43px] h-[45px] p-2 rounded-br-lg z-10" onclick="openSidebar()">
