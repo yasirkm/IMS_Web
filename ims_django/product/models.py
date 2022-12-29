@@ -12,7 +12,11 @@ class Product(models.Model):
 
     @classmethod
     def get_catalog(cls):
-        return cls.objects.filter(available=True)
+        return cls.objects.filter(available=True).order_by('product_id')
+
+    @classmethod
+    def get_by_id(cls, product_id):
+        cls.objects.get(product_id=product_id)
 
     def delete(self):
         self.available=False
