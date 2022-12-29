@@ -22,12 +22,12 @@ from transaction.views import *
 from product.views import *
 
 urlpatterns = [
-    path('', dashboard_view),
+    path('', dashboard_view, name='dashboard'),
     path('admin/', admin.site.urls),
-    path('login/', login_view),
-    path('register/', register_view),
-    path('management/', management_view),
-    path('choose/', choose_user_view),
-    path('transaction/', transaction_view),
-    path('catalog/', catalog_view),
+    path('login/', login_view, name='login'),
+    path('register/', register_view, name='register'),
+    path('management/', management_view, name='management'),
+    path('choose/', choose_user_view, name='temp_choose'),
+    path('transaction/', transaction_view, name='transaction'),
+    path('catalog/', catalog_view, name='catalog'),
 ]

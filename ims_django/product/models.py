@@ -16,7 +16,7 @@ class Product(models.Model):
 
     @classmethod
     def get_by_id(cls, product_id):
-        cls.objects.get(product_id=product_id)
+        return cls.objects.get(product_id=product_id)
 
     def delete(self):
         self.available=False
