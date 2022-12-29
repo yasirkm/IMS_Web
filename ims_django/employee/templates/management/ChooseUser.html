@@ -8,6 +8,7 @@
     <title>Register</title>
     <link href="/dist/output.css" rel="stylesheet">
     {% tailwind_css %}
+    {% load static %}
 </head>
 <body class="bg-[#004A98]">
     <button class="fixed -top-1 left-0 bg-gray-300 w-[43px] h-[45px] p-2 rounded-br-lg z-10" onclick="openSidebar()">
@@ -79,7 +80,7 @@
         <div class="container my-5 mx-auto text-white text-lg grid gap-6 sm:grid-cols-2 md:grid-cols-3 justify-items-center ">
             <div>
                 <a href="/src/management/CreateNewAcc.html">
-                    <img src="img/management.png" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2 active:ring-yellow-500 duration-100 shadow-2xl" on>
+                    <img src="{%static 'img/management.png'%}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2 active:ring-yellow-500 duration-100 shadow-2xl" on>
                 </a>
                 <a href="/src/management/CreateNewAcc.html">
                     <div class="text-center hover:underline">Management</div>
@@ -87,7 +88,7 @@
             </div>
             <div>
                 <a href="/src/management/CreateNewAcc.html">
-                    <img src="img/pengembangan.png" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
+                    <img src="{%static 'img/pengembangan.png'%}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
                 </a>
                 <a href="/src/management/CreateNewAcc.html">
                     <div class="text-center hover:underline">Pengembangan</div>
@@ -95,7 +96,7 @@
             </div>
             <div>
                 <a href="/src/management/CreateNewAcc.html">
-                    <img src="img/production.png" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
+                    <img src="{%static 'img/production.png'%}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
                 </a>
                 <a href="/src/management/CreateNewAcc.html">
                     <div class="text-center hover:underline">Produksi</div>
@@ -103,7 +104,7 @@
             </div>
             <div>
                 <a href="/src/management/CreateNewAcc.html">
-                    <img src="img/sales.png" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2 active:ring-yellow-500 duration-100 shadow-2xl">
+                    <img src="{%static 'img/sales.png'%}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2 active:ring-yellow-500 duration-100 shadow-2xl">
                 </a>
                 <a href="/src/management/CreateNewAcc.html">
                     <div class="text-center hover:underline">Sales</div>
@@ -111,7 +112,7 @@
             </div>
             <div>
                 <a href="/src/management/CreateNewAcc.html">
-                    <img src="img/storage.png" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
+                    <img src="{%static 'img/storage.png'%}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
                 </a>
                 <a href="/src/management/CreateNewAcc.html">
                     <div class="text-center hover:underline">Storage</div>
@@ -119,7 +120,7 @@
             </div>
             <div>
                 <a href="/src/management/CreateNewAcc.html">
-                    <img src="img/keuangan.png" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
+                    <img src="{%static 'img/keuangan.png'%}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
                 </a>
                 <a href="/src/management/CreateNewAcc.html">
                     <div class="text-center hover:underline">Keuangan</div>
