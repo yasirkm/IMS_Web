@@ -9,5 +9,7 @@ def catalog_view(request):
         Product(product_id=2, name='Tas Eiger', category='local', price=300000, stock=3, description='Tas bagus'),
         ]
 
+    catalog = Product.get_catalog()
+
     context = {'catalog':catalog}
     return render(request, 'catalog.html', context)

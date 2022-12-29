@@ -9,3 +9,11 @@ class Product(models.Model):
     stock = models.IntegerField(default=0, blank=False, null=False)
     description = models.TextField()
     available = models.BooleanField(default=True)
+
+    @classmethod
+    def get_catalog(cls):
+        return cls.objects.filter(available=True)
+
+    def delete(self):
+        self.available=False
+        self.save()
