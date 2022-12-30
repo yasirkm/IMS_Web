@@ -11,12 +11,27 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
 
     @classmethod
+    def add_product(cls, name, category, price, description):
+        new_product = cls(name=name, category=category, price=price, description=description)
+        new_product.save()
+        return new_product
+
+    @classmethod
     def get_catalog(cls):
         return cls.objects.filter(available=True).order_by('product_id')
 
     @classmethod
     def get_by_id(cls, product_id):
         return cls.objects.get(product_id=product_id)
+
+    def edit(self, **kwargs):
+        attributes = (attribute.name for attribute in Product._meta.get_fields())
+
+        attributes_value_edit = {attribute:new_value for attribute in attributes if attribute in kwargs}
+        for attr, new_value in attributes_value_edit.items():
+            setattr(self, attr, new_value)
+
+        self.save(update_fields=[attributes_value_edit])
 
     def delete(self):
         self.available=False
