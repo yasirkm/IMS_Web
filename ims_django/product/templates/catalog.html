@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% block content %}
+    <div class="mx-auto px-[50px] lg:ml-[350px] lg:mr-[50px] mt-[50px]">
+        <div>
+            <div class="text-5xl text-white font-bold mb-3">
+                Catalog
+            </div>
+            <hr class="border-yellow-500">
+            <div class="my-3 grid justify-items-end">
+                <div class="inline-flex rounded-md shadow-sm  " role="group">
+                    <button type="button" class="addProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                        Add Product
+                    </button>
+                    <button type="button" class="editProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
+                        Edit Product
+                    </button>
+                    <button type="button" class="saveChanges py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
+                        Save Changes
+                    </button>
+                    <button type="button" class="EditCatalog py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mr-3">
+                        Edit Catalog
+                    </button>
+                    <button type="button" class="qrScanner py-1 px-2 text-sm font-medium text-gray-900 bg-white border rounded-md border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+                          </svg>
+                          
+                    </button>
+                </div>          
+            </div>
+        </div>
+        <div>
+            <table class="table-fixed mx-auto">
+                <thead >
+                    <tr class="text-yellow-500 bg-sky-800">
+                        <th class="w-[50px] px-2 py-3 font-semibold">No</th>
+                        <th class="w-[250px] 2xl:w-[300px] px-2 text-start font-semibold">Product</th>
+                        <th class="w-[150px] 2xl:w-[200px] px-2 font-semibold">Category</th>
+                        <th class="w-[200px] 2xl:w-[250px] px-2 font-semibold">Cost</th>
+                        <th class="w-[150px] px-2 2xl:w-[200px] font-semibold">Stock</th>
+                        <th class="w-[300px] px-2 2xl:w-[350px] font-semibold">Desc</th>
+                        <th class=""></th>
+                    </tr>
+                </thead>
+                <tbody class="text-white py-2">
+                {% for product in catalog %}
+                    <tr class="border-b">
+                        <td class="py-3 text-center px-2 ">{{ product.product_id }}.</td>
+                        <td class="py-3 px-2">{{ product.name }}</td>
+                        <td class="py-3 text-center px-2">{{ product.category }}</td>
+                        <td class="py-3 text-center px-2">Rp.{{ product.price|floatformat:2|intcomma }}</td>
+                        <td class="py-3 text-center px-2">{{ product.stock }}</td>
+                        <td class="py-3 text-center px-2">{{ product.description}}</td>
+                        <td class="py-3 text-center px-2">
+                            <button class="hover:text-yellow-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"  stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                                </svg>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
+{% endblock %}

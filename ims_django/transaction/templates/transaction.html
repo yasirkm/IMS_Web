@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+    <div class="mx-auto px-[50px] lg:ml-[350px] lg:mr-[50px] mt-[50px]">
+        <div class="text-5xl text-white font-bold mb-3">Transaction</div>
+        <hr class="border-yellow-500">
+        <div class="my-3 flex flex-col sm:flex-row justify-between gap-2">
+            <div class="">
+                <a href="#" class="transactionHistory hover:underline text-yellow-500 text-xl font-semibold">
+                    Transaction History
+                </a>
+            </div>
+            
+            <div class="">
+                <div class="inline-flex rounded-md shadow-sm h-[35px] " role="group">
+                    <button type="button" class="all py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 ">
+                      All
+                    </button>
+                    <button type="button" class="filter py-1 px-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                          </svg>
+                    </button>
+                    <button type="button" class="searchButton py-1 px-3 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                          </svg>
+                    </button>
+                    <input type="text" placeholder="Product/TransactionID" class="search w-[190px] px-2 py-1 focus:ring-yellow-500">
+                </div>          
+            </div>
+        </div>
+        <table class="table-fixed mx-auto ">
+            <thead >
+                <tr class="text-yellow-500 bg-sky-800">
+                    <th class="w-[50px] px-2 py-2 font-semibold">No</th>
+                    <th class="w-[400px] 2xl:w-[450px] px-2 py-3 text-start font-semibold">Product</th>
+                    <th class="w-[150px] 2xl:w-[200px] px-2 py-3 font-semibold">Date</th>
+                    <th class="w-[200px] 2xl:w-[250px] px-2 py-3 font-semibold">Transaction Type</th>
+                    <th class="w-[150px] 2xl:w-[200px] px-2 py-3 font-semibold">Amount</th>
+                </tr>
+            </thead>
+            <tbody class="text-white py-2">
+                <tr class="border-b">
+                    <td class="py-3 text-center px-2">1.</td>
+                    <td class="py-3 px-2">Sepatu Adidas</td>
+                    <td class="py-3 text-center px-2">12 Juni 2022</td>
+                    <td class="py-3 text-center px-2">pemasukan</td>
+                    <td class="py-3 text-center px-2">300</td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
