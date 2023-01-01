@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.shortcuts import redirect
+from django.contrib.auth import views as auth_views
 
 from employee.views import *
 from transaction.views import *
 from product.views import *
+
 
 urlpatterns = [
     path('', dashboard_view, name='dashboard'),
@@ -30,4 +32,5 @@ urlpatterns = [
     path('choose/', choose_user_view, name='temp_choose'),
     path('transaction/', transaction_view, name='transaction'),
     path('catalog/', catalog_view, name='catalog'),
+    path('test/', test_login)
 ]
