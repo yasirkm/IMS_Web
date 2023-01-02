@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
+
 
 from product.models import Product
 from transaction.models import Transaction
@@ -84,3 +85,19 @@ class Employee(models.Model):
             'view_product_stock',
         ],
     }
+
+    @classmethod
+    def register(cls, username, password, first_name, last_name, phone_number, address, department, email=None, **kwargs):
+        user = User(username=username, password=password,
+                    first_name=first_name, last_name=last_name, email=email, **kwargs)
+        profile = Employee(user=user, phone_number=phone_number,
+                           address=address, department=department)
+
+        for codename in cls.DEPARTMENT_PERMISSION[department]:
+            user.user_permissions.add(
+                Permission.objects.get(codename=codename))
+
+        user.save()
+        profile.save()
+
+        return user
