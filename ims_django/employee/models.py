@@ -23,6 +23,7 @@ class Employee(models.Model):
 
     DEPARTMENT_PERMISSION = {
         'Management': [
+            'view_management',
             'register_user',
             'view_catalog',
             'edit_catalog',

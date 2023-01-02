@@ -42,15 +42,18 @@ def dashboard_view(request):
 
 
 @login_required(login_url='login')
+@permission_required('employee.view_management')
 def management_view(request):
     return render(request, 'management.html')
 
 
 @login_required(login_url='login')
+@permission_required('employee.register_user')
 def register_view(request):
     return render(request, 'management/CreateNewAcc.html')
 
 
 @login_required(login_url='login')
+@permission_required('employee.register_user')
 def choose_user_view(request):
     return render(request, 'management/ChooseUser.html')
