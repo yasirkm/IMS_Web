@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Permission
 
-
-from product.models import Product
-from transaction.models import Transaction
-
 # Create your models here.
 
 
