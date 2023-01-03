@@ -32,5 +32,6 @@ urlpatterns = [
     path('choose/', choose_user_view, name='temp_choose'),
     path('transaction/', transaction_view, name='transaction'),
     path('catalog/', catalog_view, name='catalog'),
-    path('test/', test_login)
+    path('test/', test_login),
+    path('logout/', logout_view, name="logout")
 ]
