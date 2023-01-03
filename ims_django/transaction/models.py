@@ -10,7 +10,7 @@ from product.models import Product
 class Transaction(models.Model):
     class Meta:
         permissions = [
-            ("view_transaction", "Can view transaction history"),
+            ("view_transaction_history", "Can view transaction history"),
             ("do_transaction", "Can add new transactions"),
         ]
     transaction_id = models.AutoField(primary_key=True)
