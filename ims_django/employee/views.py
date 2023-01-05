@@ -38,7 +38,9 @@ def test_login(request):
 
 @login_required(login_url='login')
 def dashboard_view(request):
+    context = {"user" : request.user}
     return render(request, 'index.html')
+
 
 
 @login_required(login_url='login')

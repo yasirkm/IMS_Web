@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
 
@@ -32,5 +32,6 @@ urlpatterns = [
     path('choose/', choose_user_view, name='temp_choose'),
     path('transaction/', transaction_view, name='transaction'),
     path('catalog/', catalog_view, name='catalog'),
-    path('test/', test_login)
+    path('test/', test_login),
+    path("__reload__/", include("django_browser_reload.urls")),
 ]
