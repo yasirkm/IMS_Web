@@ -9,10 +9,8 @@
         <div class="sm:w-[400px] md:w-[500px] xl:w-[600px] py-8 px-10 rounded-lg shadow-2xl text-lg bg-sky-600 mt-[50px] mx-auto w-[330px]">
             <form class=" relative" method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
-                {{ form }}
-                <div class="fieldWrapper">
-                    <input type="hidden" name="department" value="{{ department }}" id="id_department">
-                </div>
+                {{ user_form }}
+                {{ profile_form }}
                 <button class="bg-[#FBBC05] p-2 mt-3 duration-300 hover:bg-[#ce9f13] font-bold text-gray-900 rounded-lg">Register Account</button>
             </form>
         </div>

@@ -1,0 +1,6 @@
+<form method="POST" action="{% url 'test' %}">
+    {% csrf_token %}
+    {{ form1 }}
+    {{ form2 }}
+    <input type="submit">
+</form>

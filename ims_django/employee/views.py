@@ -66,34 +66,33 @@ def management_view(request):
 @permission_required('employee.register_user', raise_exception=True)
 def register_view(request):
     if request.method == 'GET':
-        registration_form = Registration_Form()
+        user_form = User_Registration_Form()
+        profile_form = Employee_Registration_Form()
         try:
             department = request.GET['department']
+            profile_form.fields['department'].validate(department)
+            profile_form.initial['department'] = department
         except MultiValueDictKeyError:
             return redirect('choose')
-        context = {'form':registration_form, 'department':department}
+        except ValidationError:
+            return redirect('choose')
+
+        context = {'user_form':user_form, 'department':department, 'profile_form':profile_form}
         return render(request, 'management/CreateNewAcc.html', context)
 
     elif request.method == 'POST':
-        registration_form = Registration_Form(request.POST)
-        context = {'form':registration_form}
-        if registration_form.is_valid():
-            username = registration_form.cleaned_data['username']
-            password = registration_form.cleaned_data['password']
-            email = registration_form.cleaned_data['email']
-            first_name = registration_form.cleaned_data['first_name']
-            last_name = registration_form.cleaned_data['last_name']
-            phone_number = registration_form.cleaned_data['phone_number']
-            address = registration_form.cleaned_data['address']
-            department = registration_form.cleaned_data['department']
-
-            Employee.register(username=username, password=password,
-                            first_name=first_name, last_name=last_name,
-                            phone_number=phone_number, address=address,
-                            department=department, email=email)
-            redirect('management')
+        user_form = User_Registration_Form(request.POST)
+        profile_form = Employee_Registration_Form(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            employee = profile_form.save(commit=False)
+            employee.user = user
+            employee.update_permission()
+            employee.save()
+            return redirect('management')
             
         else:
+            context = {'user_form':user_form, 'profile_form':profile_form, 'department':request.POST['department']}
             return render(request, 'management/CreateNewAcc.html', context)
 
 
@@ -119,7 +118,20 @@ def test_form_view(request):
         print(request.POST)
 
 def test_view(request):
-    model=apps.get_model('employee.Employee')
-    content_type = ContentType.objects.get_for_model(model)
-    print(Permission.objects.get(content_type=content_type, codename='view_management'))
-    return render('index.html')
+    if request.method == "GET":
+        form1 = Test_Registraion_Form()
+        form2 = NameForm()
+        context= {'form1':form1, 'form2':form2}
+        return render(request, 'test_form.html', context )
+    elif request.method == "POST":
+        form1 = Test_Registraion_Form(request.POST)
+        form2 = NameForm(request.POST)
+        print('post it is')
+        if form1.is_valid() and form2.is_valid():
+            print('yes')
+            return redirect('login')
+        else:
+            print('no')
+            context= {'form1':form1, 'form2':form2}
+            return render(request, 'test_form.html', context )
+

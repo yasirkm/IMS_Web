@@ -110,11 +110,7 @@ class Employee(models.Model):
     }
 
     @classmethod
-    def register(cls, username, password, first_name, last_name, phone_number, address, department, email=None, **kwargs):
-        user = User(username=username,
-                    first_name=first_name, last_name=last_name, email=email, **kwargs)
-        user.set_password(password)
-        user.save()
+    def register(cls, user, phone_number, address, department, **kwargs):
         profile = Employee(user=user, phone_number=phone_number,
                            address=address, department=department)
 
@@ -128,4 +124,15 @@ class Employee(models.Model):
                 user.user_permissions.add(perm)
         profile.save()
 
-        return user
+        return 
+        
+    def update_permission(self):
+        user = self.user
+        for app, app_permissions in Employee.DEPARTMENT_PERMISSION[self.department].items():
+            for permission in app_permissions:
+                model = apps.get_model(app)
+                content_type=ContentType.objects.get_for_model(model)
+                print(app, permission)
+                perm = Permission.objects.get(content_type=content_type, codename=permission)
+                user.user_permissions.add(perm)
+        self.save()
