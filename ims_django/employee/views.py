@@ -41,10 +41,7 @@ def logout_view(request):
 
 @login_required(login_url='login')
 def dashboard_view(request):
-    context = {"user" : request.user}
-    return render(request, 'index.html', context)
-
-
+    return render(request, 'index.html')
 
 @login_required(login_url='login')
 @permission_required('employee.view_management', raise_exception=True)
@@ -62,3 +59,6 @@ def register_view(request):
 @permission_required('employee.register_user', raise_exception=True)
 def choose_user_view(request):
     return render(request, 'management/ChooseUser.html')
+
+def permission_denied_view(request):
+    return render('403.html')

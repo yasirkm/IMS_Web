@@ -36,3 +36,5 @@ urlpatterns = [
     path('logout/', logout_view, name="logout"),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
+
+# handler403 = 'employee.views.permission_denied_view'

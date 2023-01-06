@@ -7,7 +7,9 @@ from django.contrib.auth.models import User, Permission
 class Employee(models.Model):
     class Meta:
         permissions = [
+            ("view_management", "Can view management page"),
             ("register_user", "Can register another user"),
+            ("configure_dynamic_pricing", "Can configure dynamic pricing"),
         ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     employee_id = models.AutoField(primary_key=True)
@@ -20,6 +22,7 @@ class Employee(models.Model):
             'employee': [
                 'view_management',
                 'register_user',
+                'configure_dynamic_pricing',
             ],
             'product': [
                 'view_catalog',
