@@ -7,7 +7,7 @@ from .models import Product
 
 
 @login_required(login_url='login')
-@permission_required('product.view_catalog')
+@permission_required('product.view_catalog', raise_exception=True)
 def catalog_view(request):
     catalog = [
         Product(product_id=1, name='Sepapu Adidas', category='brand',

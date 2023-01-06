@@ -47,18 +47,18 @@ def dashboard_view(request):
 
 
 @login_required(login_url='login')
-@permission_required('employee.view_management')
+@permission_required('employee.view_management', raise_exception=True)
 def management_view(request):
     return render(request, 'management.html')
 
 
 @login_required(login_url='login')
-@permission_required('employee.register_user')
+@permission_required('employee.register_user', raise_exception=True)
 def register_view(request):
     return render(request, 'management/CreateNewAcc.html')
 
 
 @login_required(login_url='login')
-@permission_required('employee.register_user')
+@permission_required('employee.register_user', raise_exception=True)
 def choose_user_view(request):
     return render(request, 'management/ChooseUser.html')
