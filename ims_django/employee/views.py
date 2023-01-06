@@ -42,7 +42,7 @@ def logout_view(request):
 @login_required(login_url='login')
 def dashboard_view(request):
     context = {"user" : request.user}
-    return render(request, 'index.html')
+    return render(request, 'index.html', context)
 
 
 
