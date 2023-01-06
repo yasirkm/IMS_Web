@@ -46,7 +46,9 @@ def logout_view(request):
 >>>>>>> fe95db8 (Add logout)
 @login_required(login_url='login')
 def dashboard_view(request):
+    context = {"user" : request.user}
     return render(request, 'index.html')
+
 
 
 @login_required(login_url='login')

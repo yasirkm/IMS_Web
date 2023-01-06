@@ -2,7 +2,7 @@
 
 {% load humanize %}
 {% block content %}
-    <div class="mx-auto px-[50px] lg:ml-[350px] lg:mr-[50px] mt-[50px]">
+    <div class="mx-auto px-[50px] lg:ml-[350px] lg:mr-[50px] mt-[50px] ">
         <div>
             <div class="text-5xl text-white font-bold mb-3">
                 Catalog
@@ -10,7 +10,7 @@
             <hr class="border-yellow-500">
             <div class="my-3 grid justify-items-end">
                 <div class="inline-flex rounded-md shadow-sm  " role="group">
-                    <button type="button" class="addProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                    <button type="button" onclick="document.getElementById('addProdPage').classList.toggle('hidden')"  class="addProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
                         Add Product
                     </button>
                     <button type="button" class="editProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
@@ -32,6 +32,53 @@
                 </div>          
             </div>
         </div>
+        <div id="addProdPage" class="addProdPage h-[900px] fixed w-full top-0 left-0 pt-[55px] hidden px-[50px] lg:px-[200px]  2xl:px-[400px] z-30  mb-6">
+            <div class="h-[600px] md:h-[500px] border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative ">
+                <div class="text-center font-bold text-3xl text-gray-800">
+                    Add Product
+                </div>
+                <form action="">
+                    <div class="grid md:grid-cols-2 md:gap-6">
+                        <div>
+                            <div class="text-[20px] mt-2">
+                                Product Name
+                            </div>
+                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
+                        </div>
+                        <div>
+                            <div class="text-[20px] mt-2">
+                                Category
+                            </div>
+                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
+                        </div>
+                        <div>
+                            <div class="text-[20px] mt-2">
+                                Cost
+                            </div>
+                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
+                        </div>
+                        <div>
+                            <div class="text-[20px] mt-2">
+                                Stock
+                            </div>
+                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
+                        </div>                
+                    </div>
+                    <div>
+                        <div class="text-[20px] mt-2 md:mt-6">
+                            Description
+                        </div>
+                        <textarea name="" id="" cols="40" rows="4" class="rounded-md px-2"></textarea>
+                    </div>
+                    <button type="button" onclick="document.getElementById('addProdPage').classList.toggle('hidden')" class="save mt-6 mb-6 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                        Save Product
+                    </button>  
+                    <button type="button" onclick="document.getElementById('addProdPage').classList.toggle('hidden')" class="close absolute right-5 top-3 px-3 py-1 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                        X
+                    </button>
+                </form>            
+            </div>
+    </div>
         <div>
             <table class="table-fixed mx-auto">
                 <thead >
@@ -42,6 +89,7 @@
                         <th class="w-[200px] 2xl:w-[250px] px-2 font-semibold">Cost</th>
                         <th class="w-[150px] px-2 2xl:w-[200px] font-semibold">Stock</th>
                         <th class="w-[300px] px-2 2xl:w-[350px] font-semibold">Desc</th>
+                        <th></th>
                         <th class=""></th>
                     </tr>
                 </thead>
@@ -53,7 +101,12 @@
                         <td class="py-3 text-center px-2">{{ product.category }}</td>
                         <td class="py-3 text-center px-2">Rp.{{ product.price|floatformat:2|intcomma }}</td>
                         <td class="py-3 text-center px-2">{{ product.stock }}</td>
-                        <td class="py-3 text-center px-2">{{ product.description}}</td>
+                        <td class="py-3 text-center px-2 ">{{ product.description}}</td>
+                        <td id="no" class="px-1 ">
+                            <button type="button" class="EditCatalog py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                                Delete
+                            </button>
+                        </td>
                         <td class="py-3 text-center px-2">
                             <button class="hover:text-yellow-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"  stroke="currentColor" class="w-6 h-6">
@@ -64,7 +117,14 @@
                 </tbody>
             </table>
         </div>
+        <div>
+
+        </div>
         
     </div>
+    <script>
+
+    </script>
+    
 
 {% endblock %}
