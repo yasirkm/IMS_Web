@@ -33,5 +33,6 @@ urlpatterns = [
     path('transaction/', transaction_view, name='transaction'),
     path('catalog/', catalog_view, name='catalog'),
     path('test/', test_login),
+    path('logout/', logout_view, name="logout"),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
