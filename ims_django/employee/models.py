@@ -1,6 +1,7 @@
 from django.db import models
+from django.apps import apps
 from django.contrib.auth.models import User, Permission
-
+from django.contrib.contenttypes.models import ContentType
 # Create your models here.
 
 
@@ -17,14 +18,15 @@ class Employee(models.Model):
     address = models.TextField()
     department = models.TextField(blank=False, null=False)
 
+    # NEEDS TO BE CHANGED
     DEPARTMENT_PERMISSION = {
         'Management': {
-            'employee': [
+            'employee.Employee': [
                 'view_management',
                 'register_user',
                 'configure_dynamic_pricing',
             ],
-            'product': [
+            'product.Product': [
                 'view_catalog',
                 'edit_catalog',
                 'view_product_name',
@@ -38,24 +40,24 @@ class Employee(models.Model):
                 'edit_product_price',
                 'edit_product_stock',
             ],
-            'transaction': [
-                'view_transaction',
+            'transaction.Transaction': [
+                'view_transaction_history',
                 'do_transaction',
             ]
         },
         'Development': {
-            'product': [
+            'product.Product': [
                 'view_catalog',
                 'view_product_name',
                 'view_product_category',
                 'view_product_description',
             ],
-            'transaction': [
+            'transaction.Transaction': [
                 'view_transaction',
             ]
         },
         'Finance': {
-            'product': [
+            'product.Product': [
                 'view_catalog',
                 'view_product_name',
                 'view_product_category',
@@ -64,12 +66,12 @@ class Employee(models.Model):
                 'view_product_stock',
                 'edit_product_price',
             ],
-            'transaction': [
+            'transaction.Transaction': [
                 'view_transaction',
             ]
         },
         'Storage': {
-            'product': [
+            'product.Product': [
                 'view_catalog',
                 'edit_catalog',
                 'view_product_name',
@@ -80,13 +82,13 @@ class Employee(models.Model):
                 'edit_product_category',
                 'edit_product_description',
             ],
-            'transaction': [
+            'transaction.Transaction': [
                 'view_transaction',
                 'do_transaction'
             ]
         },
         'Production': {
-            'product': [
+            'product.Product': [
                 'view_catalog',
                 'view_product_name',
                 'view_product_category',
@@ -96,7 +98,7 @@ class Employee(models.Model):
 
         },
         'Sales': {
-            'product': [
+            'product.Product': [
                 'view_catalog',
                 'view_product_name',
                 'view_product_category',
@@ -109,17 +111,21 @@ class Employee(models.Model):
 
     @classmethod
     def register(cls, username, password, first_name, last_name, phone_number, address, department, email=None, **kwargs):
-        user = User(username=username, password=password,
+        user = User(username=username,
                     first_name=first_name, last_name=last_name, email=email, **kwargs)
+        user.set_password(password)
+        user.save()
         profile = Employee(user=user, phone_number=phone_number,
                            address=address, department=department)
 
-        for app, app_permissions in cls.DEPARTMENT_PERMISSION[department]:
+        # NEEDS TO BE CHANGED
+        for app, app_permissions in cls.DEPARTMENT_PERMISSION[department].items():
             for permission in app_permissions:
-                user.user_permissions.add(
-                    Permission.objects.get(content_type__app_label=app, codename=permission))
-
-        user.save()
+                model = apps.get_model(app)
+                content_type=ContentType.objects.get_for_model(model)
+                print(app, permission)
+                perm = Permission.objects.get(content_type=content_type, codename=permission)
+                user.user_permissions.add(perm)
         profile.save()
 
         return user

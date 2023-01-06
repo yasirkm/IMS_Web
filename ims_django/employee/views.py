@@ -3,6 +3,19 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import *
+from django.forms.models import fields_for_model
+from django.forms import ValidationError
+
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+from transaction.models import Transaction
+from django.apps import apps
+
+from django.utils.datastructures import MultiValueDictKeyError
+
+
+from .models import Employee
+from .forms import *
 
 # Create your views here.
 
@@ -52,7 +65,36 @@ def management_view(request):
 @login_required(login_url='login')
 @permission_required('employee.register_user', raise_exception=True)
 def register_view(request):
-    return render(request, 'management/CreateNewAcc.html')
+    if request.method == 'GET':
+        registration_form = Registration_Form()
+        try:
+            department = request.GET['department']
+        except MultiValueDictKeyError:
+            return redirect('choose')
+        context = {'form':registration_form, 'department':department}
+        return render(request, 'management/CreateNewAcc.html', context)
+
+    elif request.method == 'POST':
+        registration_form = Registration_Form(request.POST)
+        context = {'form':registration_form}
+        if registration_form.is_valid():
+            username = registration_form.cleaned_data['username']
+            password = registration_form.cleaned_data['password']
+            email = registration_form.cleaned_data['email']
+            first_name = registration_form.cleaned_data['first_name']
+            last_name = registration_form.cleaned_data['last_name']
+            phone_number = registration_form.cleaned_data['phone_number']
+            address = registration_form.cleaned_data['address']
+            department = registration_form.cleaned_data['department']
+
+            Employee.register(username=username, password=password,
+                            first_name=first_name, last_name=last_name,
+                            phone_number=phone_number, address=address,
+                            department=department, email=email)
+            redirect('management')
+            
+        else:
+            return render(request, 'management/CreateNewAcc.html', context)
 
 
 @login_required(login_url='login')
@@ -62,3 +104,22 @@ def choose_user_view(request):
 
 def permission_denied_view(request):
     return render('403.html')
+
+def test_form_view(request):
+    if request.method=="GET":
+        # form = Employee_Form()
+        # form = User_Form()
+        # form = NameForm()
+        # form = Registration_Form()
+        form = Registration_Form({'user':1})
+        print(form.is_valid())
+        context={'form':form}
+        return render(request, 'test_form.html', context)
+    elif request.method=="POST":
+        print(request.POST)
+
+def test_view(request):
+    model=apps.get_model('employee.Employee')
+    content_type = ContentType.objects.get_for_model(model)
+    print(Permission.objects.get(content_type=content_type, codename='view_management'))
+    return render('index.html')

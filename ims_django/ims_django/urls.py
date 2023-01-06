@@ -29,12 +29,14 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('register/', register_view, name='register'),
     path('management/', management_view, name='management'),
-    path('choose/', choose_user_view, name='temp_choose'),
+    path('choose/', choose_user_view, name='choose'),
     path('transaction/', transaction_view, name='transaction'),
     path('catalog/', catalog_view, name='catalog'),
-    path('test/', test_login),
+    path('test_logni/', test_login),
     path('logout/', logout_view, name="logout"),
     path("__reload__/", include("django_browser_reload.urls")),
+    path('form/', test_form_view, name='test_form'),
+    path('test/', test_view, name='test')
 ]
 
 # handler403 = 'employee.views.permission_denied_view'
