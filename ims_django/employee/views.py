@@ -35,16 +35,12 @@ def test_login(request):
     print(request.user.is_authenticated)
     print(request.user.username)
 
-<<<<<<< HEAD
-
-
-=======
+@login_required(login_url='login')
 def logout_view(request):
     logout(request)
     return redirect('login')
 
->>>>>>> fe95db8 (Add logout)
-@login_required(login_url='login')
+
 def dashboard_view(request):
     return render(request, 'index.html')
 
