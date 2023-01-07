@@ -33,50 +33,20 @@
             </div>
         </div>
         <div id="addProdPage" class="addProdPage h-[900px] fixed w-full top-0 left-0 pt-[55px] hidden px-[50px] lg:px-[200px]  2xl:px-[400px] z-30  mb-6">
-            <div class="h-[600px] md:h-[500px] border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative ">
+            <div class="border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative ">
                 <div class="text-center font-bold text-3xl text-gray-800">
                     Add Product
                 </div>
-                <form action="">
-                    <div class="grid md:grid-cols-2 md:gap-6">
-                        <div>
-                            <div class="text-[20px] mt-2">
-                                Product Name
-                            </div>
-                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
-                        </div>
-                        <div>
-                            <div class="text-[20px] mt-2">
-                                Category
-                            </div>
-                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
-                        </div>
-                        <div>
-                            <div class="text-[20px] mt-2">
-                                Cost
-                            </div>
-                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
-                        </div>
-                        <div>
-                            <div class="text-[20px] mt-2">
-                                Stock
-                            </div>
-                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
-                        </div>                
-                    </div>
-                    <div>
-                        <div class="text-[20px] mt-2 md:mt-6">
-                            Description
-                        </div>
-                        <textarea name="" id="" cols="40" rows="4" class="rounded-md px-2"></textarea>
-                    </div>
-                    <button type="button" onclick="document.getElementById('addProdPage').classList.toggle('hidden')" class="save mt-6 mb-6 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                <form action="{% url 'catalog' %}" method="POST">
+                    {% csrf_token %}
+                    {{form}}
+                    <button class="save mt-6 mb-6 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
                         Save Product
                     </button>  
-                    <button type="button" onclick="document.getElementById('addProdPage').classList.toggle('hidden')" class="close absolute right-5 top-3 px-3 py-1 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
-                        X
-                    </button>
                 </form>            
+                <button type="button" onclick="document.getElementById('addProdPage').classList.toggle('hidden')" class="close absolute right-5 top-3 px-3 py-1 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                    X
+                </button>
             </div>
     </div>
         <div>

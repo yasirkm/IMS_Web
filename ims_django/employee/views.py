@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import *
 from django.forms.models import fields_for_model
 from django.forms import ValidationError
+from django.forms import formset_factory
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -16,6 +17,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from .models import Employee
 from .forms import *
+from product.forms import *
 
 # Create your views here.
 
@@ -110,28 +112,30 @@ def test_form_view(request):
         # form = User_Form()
         # form = NameForm()
         # form = Registration_Form()
-        form = Registration_Form({'user':1})
-        print(form.is_valid())
-        context={'form':form}
+        form1 = NameForm()
+        form2 = NameForm()
+        context={'form1':form1, 'form2':form2}
         return render(request, 'test_form.html', context)
     elif request.method=="POST":
         print(request.POST)
 
 def test_view(request):
+    # NameFormSet = formset_factory(NameForm, extra=4)
     if request.method == "GET":
-        form1 = Test_Registraion_Form()
-        form2 = NameForm()
-        context= {'form1':form1, 'form2':form2}
+        form1 = Add_Product_Form()
+        context= {'form1':form1}
         return render(request, 'test_form.html', context )
     elif request.method == "POST":
-        form1 = Test_Registraion_Form(request.POST)
-        form2 = NameForm(request.POST)
+        # form1 = Test_Registraion_Form(request.POST)
+        # form2 = NameForm(request.POST)
+        form1 = Add_Product_Form(request.POST)
         print('post it is')
-        if form1.is_valid() and form2.is_valid():
-            print('yes')
-            return redirect('login')
-        else:
-            print('no')
-            context= {'form1':form1, 'form2':form2}
-            return render(request, 'test_form.html', context )
+        print(form1)
+        # if form1.is_valid() and form2.is_valid():
+        #     print('yes')
+        #     return redirect('login')
+        # else:
+        #     print('no')
+        #     context= {'form1':form1, 'form2':form2}
+        #     return render(request, 'test_form.html', context )
 
