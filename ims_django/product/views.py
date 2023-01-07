@@ -46,13 +46,10 @@ def catalog_view(request):
             'stock':'product.edit_product_stock',
             'available':'product.edit_catalog',
         }
-        print(request.body)
         new_fields_value = json.loads(request.body)
         try:
-            print(new_fields_value['id'])
-            catalog = Product.get_catalog()
-            print(catalog)
-            product = Product.get_catalog().get(pk=new_fields_value['id'])
+            product_id = new_fields_value['id']
+            product = Product.get_catalog().get(pk=product_id)
             for field, permission in field_permission.items():
                 print(field, permission)
                 if field in new_fields_value:
@@ -61,7 +58,6 @@ def catalog_view(request):
                         print(f'added {field}')
                         setattr(product, field, new_fields_value[field])
                     else:
-                        response['message']=f'You do not have the permission to edit product {field}'
                         raise PermissionError(f'You do not have the permission to edit product {field}')
 
             product.full_clean()
@@ -77,5 +73,21 @@ def catalog_view(request):
             response['message']='Invalid value'
         except PermissionError as e:
             response['message']=str(e)
+
+        return JsonResponse(response)
+
+    elif request.method == 'DELETE':
+        response = {'success':False, 'message':None}
+        data = json.loads(request.body)
+        try:
+            product_id = data['id']
+            product = Product.get_catalog().get(pk=product_id)
+            product.delete()
+            response['success'] = True
+            response['message'] = 'Product successfully deleted'
+        except ObjectDoesNotExist:
+            response['message']='That product is not on database'
+        except KeyError:
+            response['message']='Invalid request sent'
 
         return JsonResponse(response)
