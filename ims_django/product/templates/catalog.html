@@ -13,13 +13,13 @@
                     <button type="button" onclick="document.getElementById('addProdPage').classList.toggle('hidden')"  class="addProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
                         Add Product
                     </button>
-                    <button type="button" class="editProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
+                    <button id="editProduct"  type="button" class="editProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
                         Edit Product
                     </button>
-                    <button type="button" class="saveChanges py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
+                    <button id="save"  type="button" class="saveChanges py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
                         Save Changes
                     </button>
-                    <button type="button" class="EditCatalog py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mr-3">
+                    <button id="editCatalog"  type="button" class="EditCatalog py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mr-3">
                         Edit Catalog
                     </button>
                     <button type="button" class="qrScanner py-1 px-2 text-sm font-medium text-gray-900 bg-white border rounded-md border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
@@ -54,7 +54,7 @@
                 <thead >
                     <tr class="text-yellow-500 bg-sky-800">
                         <th class="w-[50px] px-2 py-3 font-semibold">No</th>
-                        <th class="w-[250px] 2xl:w-[300px] px-2 text-start font-semibold">Product</th>
+                        <th class="w-[250px] 2xl:w-[300px] px-2 font-semibold">Product</th>
                         <th class="w-[150px] 2xl:w-[200px] px-2 font-semibold">Category</th>
                         <th class="w-[200px] 2xl:w-[250px] px-2 font-semibold">Cost</th>
                         <th class="w-[150px] px-2 2xl:w-[200px] font-semibold">Stock</th>
@@ -67,13 +67,13 @@
                 {% for product in catalog %}
                     <tr class="border-b">
                         <td class="py-3 text-center px-2 ">{{ product.product_id }}.</td>
-                        <td class="py-3 px-2">{{ product.name }}</td>
-                        <td class="py-3 text-center px-2">{{ product.category }}</td>
-                        <td class="py-3 text-center px-2">Rp.{{ product.price|floatformat:2|intcomma }}</td>
-                        <td class="py-3 text-center px-2">{{ product.stock }}</td>
-                        <td class="py-3 text-center px-2 ">{{ product.description}}</td>
-                        <td id="no" class="px-1 ">
-                            <button type="button" class="EditCatalog py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                        <td class="product py-3 text-center px-2">{{ product.name }}</td>
+                        <td class="category py-3 text-center px-2">{{ product.category }}</td>
+                        <td class="cost py-3 text-center px-2">Rp.{{ product.price|floatformat:2|intcomma }}</td>
+                        <td class="stock py-3 text-center px-2">{{ product.stock }}</td>
+                        <td class="desc py-3 text-center px-2 ">{{ product.description}}</td>
+                        <td class="px-1 ">
+                            <button type="button" class="delete py-1 px-3 text-sm font-medium disabled:bg-slate-500 disabled:border-slate-500 disabled:hover:text-gray-900 text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
                                 Delete
                             </button>
                         </td>
@@ -93,7 +93,356 @@
         
     </div>
     <script>
+        //disable and enable delete button when clicked on 'Edit Catalog' button
+        var btnEdit = document.getElementById('editCatalog');
+        var btnDel = document.getElementsByClassName('delete');
 
+        for (let index = 0; index < btnDel.length; index++) {
+            btnDel[index].disabled = true;       
+        }
+        btnEdit.addEventListener('click', function(event){
+            for (let index = 0; index < btnDel.length; index++) {
+                btnDel[index].disabled = !btnDel[index].disabled;
+            }
+        });
+
+        //for editing and saving product
+        var btnEditProd = document.getElementById('editProduct');
+        var saveProd = document.getElementById('save');
+
+        var prod = document.getElementsByClassName('product');
+        var cate = document.getElementsByClassName('category');
+        var cost = document.getElementsByClassName('cost');
+        var stock = document.getElementsByClassName('stock');
+        var desc = document.getElementsByClassName('desc');
+
+        btnEditProd.addEventListener('click', function(event){
+            //console.log(cells);
+            //for column product
+            for (var i = 0; i < prod.length; i++){
+                prod[i].onclick = function(){
+                    if (this.hasAttribute('data-clicked')) {
+                        return;
+                    }
+
+                    this.setAttribute('data-clicked', 'yes');
+                    this.setAttribute('data-text', this.innerHTML);
+
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'text');
+                    input.value = this.innerHTML;
+                    input.style.width = this.offsetWidth - (this.clientLeft * 2) + "px";
+                    input.style.height = this.offsetHeight - (this.clientTop * 2) + "px";
+                    input.style.border = "0px";
+                    input.style.fontSize = "inherit";
+                    input.style.textAlign = "inherit";
+                    input.style.backgroundColor = "#004A98"
+                    
+                    input.onblur = function(){
+                        var td = input.parentElement;
+                        var orig_text = input.parentElement.getAttribute('data-text');
+                        var current_text = this.value;
+
+                        if (orig_text != current_text) {
+                            //there are changes in the cell's text
+                            //change data into database
+                            fetch('', {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ "id": 78912 })
+                            })
+                            .then(response => response.json())
+                            .then(response => console.log(JSON.stringify(response)))
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = current_text;
+                            td.style.css = 'padding: 5px';
+                            console.log(orig_text + ' is Changed to ' + current_text);
+                        } else {
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = orig_text;
+                            td.style.css = 'padding: 5px';
+                            console.log('No Changes Made')
+                        }
+                    }
+
+                    input.onkeypress = function(){
+                        if (event.keyCode == 13){
+                            this.blur();
+                        }
+                    }
+
+                    this.innerHTML = '';
+                    this.style.cssText = 'padding: 0px 0px'
+                    this.append(input);
+                    this.firstElementChild.select();
+                }
+            }
+
+            //for column category
+            for (var i = 0; i < cate.length; i++){
+                cate[i].onclick = function(){
+                    if (this.hasAttribute('data-clicked')) {
+                        return;
+                    }
+
+                    this.setAttribute('data-clicked', 'yes');
+                    this.setAttribute('data-text', this.innerHTML);
+
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'text');
+                    input.value = this.innerHTML;
+                    input.style.width = this.offsetWidth - (this.clientLeft * 2) + "px";
+                    input.style.height = this.offsetHeight - (this.clientTop * 2) + "px";
+                    input.style.border = "0px";
+                    input.style.fontSize = "inherit";
+                    input.style.textAlign = "inherit";
+                    input.style.backgroundColor = "#004A98"
+                    
+                    input.onblur = function(){
+                        var td = input.parentElement;
+                        var orig_text = input.parentElement.getAttribute('data-text');
+                        var current_text = this.value;
+
+                        if (orig_text != current_text) {
+                            //there are changes in the cell's text
+                            //change data into database
+                            fetch('', {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ "id": 78912 })
+                            })
+                            .then(response => response.json())
+                            .then(response => console.log(JSON.stringify(response)))
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = current_text;
+                            td.style.css = 'padding: 5px';
+                            console.log(orig_text + ' is Changed to ' + current_text);
+                        } else {
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = orig_text;
+                            td.style.css = 'padding: 5px';
+                            console.log('No Changes Made')
+                        }
+                    }
+
+                    input.onkeypress = function(){
+                        if (event.keyCode == 13){
+                            this.blur();
+                        }
+                    }
+
+                    this.innerHTML = '';
+                    this.style.cssText = 'padding: 0px 0px'
+                    this.append(input);
+                    this.firstElementChild.select();
+                }
+            }
+
+            //for column cost
+            for (var i = 0; i < cost.length; i++){
+                cost[i].onclick = function(){
+                    if (this.hasAttribute('data-clicked')) {
+                        return;
+                    }
+
+                    this.setAttribute('data-clicked', 'yes');
+                    this.setAttribute('data-text', this.innerHTML);
+
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'text');
+                    input.value = this.innerHTML;
+                    input.style.width = this.offsetWidth - (this.clientLeft * 2) + "px";
+                    input.style.height = this.offsetHeight - (this.clientTop * 2) + "px";
+                    input.style.border = "0px";
+                    input.style.fontSize = "inherit";
+                    input.style.textAlign = "inherit";
+                    input.style.backgroundColor = "#004A98"
+                    
+                    input.onblur = function(){
+                        var td = input.parentElement;
+                        var orig_text = input.parentElement.getAttribute('data-text');
+                        var current_text = this.value;
+
+                        if (orig_text != current_text) {
+                            //there are changes in the cell's text
+                            //change data into database
+                            fetch('', {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ "id": 78912 })
+                            })
+                            .then(response => response.json())
+                            .then(response => console.log(JSON.stringify(response)))
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = current_text;
+                            td.style.css = 'padding: 5px';
+                            console.log(orig_text + ' is Changed to ' + current_text);
+                        } else {
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = orig_text;
+                            td.style.css = 'padding: 5px';
+                            console.log('No Changes Made')
+                        }
+                    }
+
+                    input.onkeypress = function(){
+                        if (event.keyCode == 13){
+                            this.blur();
+                        }
+                    }
+
+                    this.innerHTML = '';
+                    this.style.cssText = 'padding: 0px 0px'
+                    this.append(input);
+                    this.firstElementChild.select();
+                }
+            }
+
+            //for column stock
+            for (var i = 0; i < stock.length; i++){
+                stock[i].onclick = function(){
+                    if (this.hasAttribute('data-clicked')) {
+                        return;
+                    }
+
+                    this.setAttribute('data-clicked', 'yes');
+                    this.setAttribute('data-text', this.innerHTML);
+
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'text');
+                    input.value = this.innerHTML;
+                    input.style.width = this.offsetWidth - (this.clientLeft * 2) + "px";
+                    input.style.height = this.offsetHeight - (this.clientTop * 2) + "px";
+                    input.style.border = "0px";
+                    input.style.fontSize = "inherit";
+                    input.style.textAlign = "inherit";
+                    input.style.backgroundColor = "#004A98"
+                    
+                    input.onblur = function(){
+                        var td = input.parentElement;
+                        var orig_text = input.parentElement.getAttribute('data-text');
+                        var current_text = this.value;
+
+                        if (orig_text != current_text) {
+                            //there are changes in the cell's text
+                            //change data into database
+                            fetch('', {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ "id": 78912 })
+                            })
+                            .then(response => response.json())
+                            .then(response => console.log(JSON.stringify(response)))
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = current_text;
+                            td.style.css = 'padding: 5px';
+                            console.log(orig_text + ' is Changed to ' + current_text);
+                        } else {
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = orig_text;
+                            td.style.css = 'padding: 5px';
+                            console.log('No Changes Made')
+                        }
+                    }
+
+                    input.onkeypress = function(){
+                        if (event.keyCode == 13){
+                            this.blur();
+                        }
+                    }
+
+                    this.innerHTML = '';
+                    this.style.cssText = 'padding: 0px 0px'
+                    this.append(input);
+                    this.firstElementChild.select();
+                }
+            }
+
+            //for column description
+            for (var i = 0; i < desc.length; i++){
+                desc[i].onclick = function(){
+                    if (this.hasAttribute('data-clicked')) {
+                        return;
+                    }
+
+                    this.setAttribute('data-clicked', 'yes');
+                    this.setAttribute('data-text', this.innerHTML);
+
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'text');
+                    input.value = this.innerHTML;
+                    input.style.width = this.offsetWidth - (this.clientLeft * 2) + "px";
+                    input.style.height = this.offsetHeight - (this.clientTop * 2) + "px";
+                    input.style.border = "0px";
+                    input.style.fontSize = "inherit";
+                    input.style.textAlign = "inherit";
+                    input.style.backgroundColor = "#004A98"
+                    
+                    input.onblur = function(){
+                        var td = input.parentElement;
+                        var orig_text = input.parentElement.getAttribute('data-text');
+                        var current_text = this.value;
+
+                        if (orig_text != current_text) {
+                            //there are changes in the cell's text
+                            //change data into database
+                            fetch('', {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ "id": 78912 })
+                            })
+                            .then(response => response.json())
+                            .then(response => console.log(JSON.stringify(response)))
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = current_text;
+                            td.style.css = 'padding: 5px';
+                            console.log(orig_text + ' is Changed to ' + current_text);
+                        } else {
+                            td.removeAttribute('data-clicked');
+                            td.removeAttribute('data-text');
+                            td.innerHTML = orig_text;
+                            td.style.css = 'padding: 5px';
+                            console.log('No Changes Made')
+                        }
+                    }
+
+                    input.onkeypress = function(){
+                        if (event.keyCode == 13){
+                            this.blur();
+                        }
+                    }
+
+                    this.innerHTML = '';
+                    this.style.cssText = 'padding: 0px 0px'
+                    this.append(input);
+                    this.firstElementChild.select();
+                }
+            }
+        });
     </script>
     
 
