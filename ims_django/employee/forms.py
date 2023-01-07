@@ -54,8 +54,11 @@ class Employee_Registration_Form(ModelForm):
     class Meta:
         model = Employee
         exclude = ('user',)
+        widgets ={
+            'department': forms.HiddenInput()
+        }
     template_name = 'form/input_form.html'
-    department = fields_for_model(Employee)['department']
-    department.widget = forms.HiddenInput()
+    # department = fields_for_model(Employee)['department']
+    # department.widget = forms.HiddenInput()
     # department.hidden=True
     
