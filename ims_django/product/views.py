@@ -62,7 +62,7 @@ def catalog_view(request):
                         setattr(product, field, new_fields_value[field])
                     else:
                         response['message']=f'You do not have the permission to edit product {field}'
-                        break
+                        raise PermissionError(f'You do not have the permission to edit product {field}')
 
             product.full_clean()
             product.save()
@@ -74,6 +74,8 @@ def catalog_view(request):
         except KeyError:
             response['message']='Invalid request sent'
         except ValidationError:
-            response['message']=f'Invalid value'
+            response['message']='Invalid value'
+        except PermissionError as e:
+            response['message']=str(e)
 
         return JsonResponse(response)
