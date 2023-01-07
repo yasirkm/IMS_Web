@@ -25,7 +25,11 @@ class Employee(models.Model):
         ('Production', 'Production'),
         ('Sales', 'Sales')]
 
+<<<<<<< Updated upstream
     department = models.ChoiceField(choices=DEPARTMENT)
+=======
+    department = models.CharField(max_length=16, choices=DEPARTMENT)
+>>>>>>> Stashed changes
     
     DEPARTMENT_PERMISSION = {
         'Management': {
