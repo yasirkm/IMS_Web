@@ -1,6 +1,6 @@
-<form method="POST" action="{% url 'test' %}">
+<form method="PATCH" action="{% url 'test' %}">
     {% csrf_token %}
-    {{ form1 }}
-    {{ form2 }}
+    {{ form }}
+    <!-- {{ form2 }} -->
     <input type="submit">
 </form>

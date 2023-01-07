@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
@@ -7,6 +9,7 @@ from django.forms.models import fields_for_model
 from django.forms import ValidationError
 from django.forms import formset_factory
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from transaction.models import Transaction
@@ -121,21 +124,13 @@ def test_form_view(request):
 
 def test_view(request):
     # NameFormSet = formset_factory(NameForm, extra=4)
+    print(request.method)
     if request.method == "GET":
-        form1 = Add_Product_Form()
-        context= {'form1':form1}
-        return render(request, 'test_form.html', context )
+        form = NameForm()
+        context = {'form':form}
+        return render(request, 'test_form.html', context)
     elif request.method == "POST":
-        # form1 = Test_Registraion_Form(request.POST)
-        # form2 = NameForm(request.POST)
-        form1 = Add_Product_Form(request.POST)
-        print('post it is')
-        print(form1)
-        # if form1.is_valid() and form2.is_valid():
-        #     print('yes')
-        #     return redirect('login')
-        # else:
-        #     print('no')
-        #     context= {'form1':form1, 'form2':form2}
-        #     return render(request, 'test_form.html', context )
+        pass
+    elif request.method == "PATCH":
+        new_data = json.loads(request.body)
 

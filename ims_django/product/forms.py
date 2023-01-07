@@ -7,7 +7,10 @@ from .models import Product
 class Add_Product_Form(ModelForm):
     class Meta:
         model = Product
-        # fields = '__all__'
-        exclude = ('available',)
+        fields = '__all__'
+        # exclude = ('available',)
+        widgets = {
+            'available':forms.HiddenInput()
+        }
 
     template_name = 'form/input_form.html'
