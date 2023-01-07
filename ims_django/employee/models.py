@@ -14,11 +14,19 @@ class Employee(models.Model):
         ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     employee_id = models.AutoField(primary_key=True)
-    phone_number = models.TextField(blank=False, null=False)
-    address = models.TextField()
-    department = models.TextField(blank=False, null=False)
+    phone_number = models.CharField(max_length=16, blank=False, null=False)
+    address = models.CharField(max_length=255)
 
-    # NEEDS TO BE CHANGED
+    DEPARTMENT = [
+        ('Management', 'Management'), 
+        ('Development', 'Development'),
+        ('Finance', 'Finance'),
+        ('Storage', 'Storage'),
+        ('Production', 'Production'),
+        ('Sales', 'Sales')]
+
+    department = models.ChoiceField(choices=DEPARTMENT)
+    
     DEPARTMENT_PERMISSION = {
         'Management': {
             'employee.Employee': [
