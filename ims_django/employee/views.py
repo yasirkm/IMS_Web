@@ -59,12 +59,14 @@ def logout_view(request):
 
 @login_required(login_url='login')
 def dashboard_view(request):
-    return render(request, 'index.html')
+    context={'title':'Dashboard'}
+    return render(request, 'index.html',context)
 
 @login_required(login_url='login')
 @permission_required('employee.view_management', raise_exception=True)
 def management_view(request):
-    return render(request, 'management.html')
+    context={'title':'Management'}
+    return render(request, 'management.html', context)
 
 
 @login_required(login_url='login')
@@ -82,7 +84,7 @@ def register_view(request):
         except ValidationError:
             return redirect('choose')
 
-        context = {'user_form':user_form, 'department':department, 'profile_form':profile_form}
+        context = {'user_form':user_form, 'department':department, 'profile_form':profile_form, 'title':'Management'}
         return render(request, 'management/CreateNewAcc.html', context)
 
     elif request.method == 'POST':
@@ -97,14 +99,15 @@ def register_view(request):
             return redirect('management')
             
         else:
-            context = {'user_form':user_form, 'profile_form':profile_form, 'department':request.POST['department']}
+            context = {'user_form':user_form, 'profile_form':profile_form, 'department':request.POST['department'], 'title':'Management'}
             return render(request, 'management/CreateNewAcc.html', context)
 
 
 @login_required(login_url='login')
 @permission_required('employee.register_user', raise_exception=True)
 def choose_user_view(request):
-    return render(request, 'management/ChooseUser.html')
+    context = {'title':'Management'}
+    return render(request, 'management/ChooseUser.html', context)
 
 def permission_denied_view(request):
     return render('403.html')

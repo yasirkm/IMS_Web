@@ -12,7 +12,6 @@ from .forms import *
 
 # Create your views here.
 
-# @csrf_exempt
 @login_required(login_url='login')
 @permission_required('product.view_catalog', raise_exception=True)
 def catalog_view(request):
