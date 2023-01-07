@@ -2,7 +2,9 @@ import json
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import *
+from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 
 from .models import Product
@@ -10,15 +12,15 @@ from .forms import *
 
 # Create your views here.
 
-
+# @csrf_exempt
 @login_required(login_url='login')
 @permission_required('product.view_catalog', raise_exception=True)
 def catalog_view(request):
     page_title = 'Catalog'
+    add_product_form = Add_Product_Form()
+    catalog = Product.get_catalog()
 
     if request.method == 'GET':
-        catalog = Product.get_catalog()
-        add_product_form = Add_Product_Form()
         context = {'catalog': catalog, 'title': page_title, 'form':add_product_form}
         return render(request, 'catalog.html', context)
 
@@ -44,24 +46,34 @@ def catalog_view(request):
             'stock':'product.edit_product_stock',
             'available':'product.edit_catalog',
         }
+        print(request.body)
         new_fields_value = json.loads(request.body)
         try:
+            print(new_fields_value['id'])
+            catalog = Product.get_catalog()
+            print(catalog)
             product = Product.get_catalog().get(pk=new_fields_value['id'])
-            form = Add_Product_Form(instance=product)
-            for field, permission in field_permission:
-                if request.user.has_perm(permission):
-                    form.fields[field] = new_fields_value[field]
-                else:
-                    response['message']=f'You do not have the permission to edit product {field}'
-                    break
+            for field, permission in field_permission.items():
+                print(field, permission)
+                if field in new_fields_value:
+                    print(field, permission)
+                    if request.user.has_perm(permission):
+                        print(f'added {field}')
+                        setattr(product, field, new_fields_value[field])
+                    else:
+                        response['message']=f'You do not have the permission to edit product {field}'
+                        break
 
-            if form.is_valid():
-                form.save()
-            else :
-                    response['message']=f'Invalid value'
+            product.full_clean()
+            product.save()
+            response['success'] = True
+            response['message'] = 'Product successfully edited'
+
         except ObjectDoesNotExist:
             response['message']='That product is not on database'
         except KeyError:
             response['message']='Invalid request sent'
+        except ValidationError:
+            response['message']=f'Invalid value'
 
         return JsonResponse(response)
