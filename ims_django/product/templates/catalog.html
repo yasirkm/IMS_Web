@@ -66,6 +66,7 @@
                 <tbody class="text-white py-2">
                 {% for product in catalog %}
                     <tr class="border-b">
+                        <td class="product_id" hidden>{{ product.product_id }}</td>
                         <td class="py-3 text-center px-2 ">{{ forloop.counter }}.</td>
                         <td class="product py-3 text-center px-2">{{ product.name }}</td>
                         <td class="category py-3 text-center px-2">{{ product.category }}</td>
