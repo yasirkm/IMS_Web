@@ -45,9 +45,10 @@
                 </div>
                 <form action="{% url 'transaction' %}" method="POST">
                     {%  csrf_token %}
-                    <div class="grid md:grid-cols-2 md:gap-6">
+                    <div>
                         {{transaction_form}}
                     </div>
+                    <br>
                     <div id="detail_forms">
                         {% for form in transaction_detail_forms%}
                         <div class="detail_form">

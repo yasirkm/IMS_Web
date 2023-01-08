@@ -21,5 +21,5 @@ class Employee_Registration_Form(ModelForm):
             'department': forms.HiddenInput(),
             'address': forms.TextInput(attrs={'class':'custom-class'})
         }
-    template_name = 'form/input_form.html'
+    template_name = 'form/registration_form.html'
     

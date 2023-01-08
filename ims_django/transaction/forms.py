@@ -8,14 +8,11 @@ class Add_Transaction_Form(ModelForm):
         model = Transaction
         fields = {'type', 'receipt_number'}
     
-    template_name = 'form/input_form.html'
+    template_name = 'form/add_transaction_form.html'
 
 class Add_Transaction_Detail_Form(ModelForm):
-    product_id = ModelChoiceField(queryset=Product.get_catalog())
+    product_id = ModelChoiceField(queryset=Product.get_catalog(), label='product')
     class Meta:
         model = Transaction_Detail
         exclude = ('transaction_id',)
-        labels = {
-            'product_id':'product'
-        }
-    template_name = 'form/input_form.html'
+    template_name = 'form/add_transaction_form.html'

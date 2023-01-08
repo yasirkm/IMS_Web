@@ -16,4 +16,4 @@ class Add_Product_Form(ModelForm):
             'description': forms.Textarea(attrs={'class':''})
         }
 
-    template_name = 'form/input_form.html'
+    template_name = 'form/add_product_form.html'

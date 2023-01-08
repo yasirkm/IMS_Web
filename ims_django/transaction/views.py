@@ -48,7 +48,7 @@ def transaction_view(request):
                     if not transaction_detail_form.is_valid() or new_transaction.type=='OUT' and new_transaction_detail.product_id.stock - new_transaction_detail.quantity < 0:
                         detail_form_has_error = True
                     else:
-                        new_transaction_details.append()
+                        new_transaction_details.append(new_transaction_detail)
 
                 if detail_form_has_error:
                     raise ValidationError('invalid transaction detail')
