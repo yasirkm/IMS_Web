@@ -36,52 +36,6 @@
             </div>
         </div>
         <div id="addTransactionPage" class="addTransactionPage h-[900px] fixed w-full top-0 left-0 pt-[55px]  px-[50px] lg:px-[200px]  2xl:px-[400px] z-30  mb-6 hidden">
-<<<<<<< HEAD
-            <div class=" border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative ">
-                <div class="text-center font-bold text-3xl text-gray-800">
-                    Add Transaction
-                </div>
-                <div class="" id="transactPage">
-                </div>
-                <form action="">
-                    <div id="formProduct" class="grid md:grid-cols-2 md:gap-6">
-                        <div >
-                            <div class="text-[20px] mt-2">
-                                Product Name
-                            </div>
-                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
-                        </div>
-                        <div>
-                            <div class="text-[20px] mt-2">
-                                Date
-                            </div>
-                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
-                        </div>
-                        <div>
-                            <div class="text-[20px] mt-2">
-                                Transaction Type
-                            </div>
-                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
-                        </div>
-                        <div>
-                            <div class="text-[20px] mt-2">
-                                Amount
-                            </div>
-                            <input type="text" class="h-[30px] w-full sm:w-3/4 px-2 rounded-sm">
-                        </div>                
-                    </div>
-                    <div class="inline-flex">
-                        <button type="button" onclick="cloneAdd()" class="addProduct mt-5 mb-1 py-1 px-3 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500" id="addBtn">
-                            Add More
-                        </button>
-                        <br>
-                        <button type="button" onclick="deleteClone()" class="addProduct mt-5 mb-1 ml-5 py-1 px-3 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500" id="addBtn">
-                            Delete
-                        </button>
-                    </div>
-                    <br>
-                    <button type="button" onclick="document.getElementById('addTransactionPage').classList.toggle('hidden')" class="save mt-5 mb-5 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
-=======
             <div class="border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative ">
                 <div class="text-center font-bold text-3xl text-gray-800">
                     Add Transaction
@@ -95,12 +49,20 @@
                         {{transaction_form}}
                     </div>
                     <div>
-                        {% for form in transaction_detail_forms %}
-                        {{form}}
-                        {% endfor %}
+                        {{transaction_detail_form}}
+                        {{transaction_detail_form}}
                     </div>
+                    <div class="inline-flex">
+                        <button type="button" onclick="cloneAdd()" class="addProduct mt-5 mb-1 py-1 px-3 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500" id="addBtn">
+                            Add More
+                        </button>
+                        <br>
+                        <button type="button" onclick="deleteClone()" class="addProduct mt-5 mb-1 ml-5 py-1 px-3 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500" id="addBtn">
+                            Delete
+                        </button>
+                    </div>
+                    <br>
                     <button class="save mt-6 mb-6 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
->>>>>>> 060becc (added add transaction)
                         Save Transaction
                     </button>  
                     <button type="button" onclick="document.getElementById('addTransactionPage').classList.toggle('hidden')" class="close absolute right-5 top-3 px-3 py-1 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
