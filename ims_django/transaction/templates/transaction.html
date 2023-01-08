@@ -95,8 +95,9 @@
                         {{transaction_form}}
                     </div>
                     <div>
-                        {{transaction_detail_form}}
-                        {{transaction_detail_form}}
+                        {% for form in transaction_detail_forms %}
+                        {{form}}
+                        {% endfor %}
                     </div>
                     <button class="save mt-6 mb-6 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
 >>>>>>> 060becc (added add transaction)
