@@ -41,6 +41,7 @@ def login_view(request):
             else:
                 return redirect('dashboard')
         else:
+            context['error_message'] = 'invalid username or password'
             messages.info(request, 'Username or Password incorrect')
     elif request.method == "GET" and "next" in request.GET:
         context["next"] = request.GET["next"]
