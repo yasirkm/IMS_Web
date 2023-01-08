@@ -17,6 +17,6 @@ class Add_Transaction_Detail_Form(ModelForm):
         model = Transaction_Detail
         exclude = ('transaction_id',)
         widgets = {
-            'quantity':forms.NumberInput(attrs={'min':0})
+            'quantity':forms.NumberInput(attrs={'min':1})
         }
     template_name = 'form/add_transaction_form.html'
