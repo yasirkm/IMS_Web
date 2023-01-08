@@ -10,18 +10,24 @@
             <hr class="border-yellow-500">
             <div class="my-3 grid justify-items-end">
                 <div class="inline-flex rounded-md shadow-sm  " role="group">
+                    {% if perms.product.edit_catalog %}
                     <button type="button" onclick="document.getElementById('addProdPage').classList.toggle('hidden')"  class="addProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
                         Add Product
                     </button>
+                    {% endif %}
+                    {% if perms.product.edit_product %}
                     <button id="editProduct"  type="button" class="editProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
                         Edit Product
                     </button>
                     <button id="save" onclick="window.location.reload();" type="button" class="saveChanges py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
                         Save Changes
                     </button>
+                    {% endif %}
+                    {% if perms.product.edit_catalog%}
                     <button id="editCatalog"  type="button" class="EditCatalog py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mr-3">
                         Edit Catalog
                     </button>
+                    {% endif %}
                     <button type="button" class="qrScanner py-1 px-2 text-sm font-medium text-gray-900 bg-white border rounded-md border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
@@ -32,6 +38,7 @@
                 </div>          
             </div>
         </div>
+        {% if perms.product.edit_catalog %}
         <div id="addProdPage" class="addProdPage h-[900px] fixed w-full top-0 left-0 pt-[25px] px-[50px] lg:px-[200px] 2xl:px-[400px] z-30 mb-6 overflow-y-auto hidden">
             <div class="border border-gray-800 bg-gray-200 rounded-2xl px-10 py-5 shadow-lg relative max-h-screen overflow-y-auto">
                 <div class="text-center font-bold text-3xl text-gray-800 ">
@@ -48,7 +55,8 @@
                     X
                 </button>
             </div>
-    </div>
+        </div>
+        {% endif %}
         <div>
             <table class="table table-fixed mx-auto">
                 <thead >
@@ -74,9 +82,11 @@
                         <td class="stock py-3 text-center px-2">{{ product.stock }}</td>
                         <td class="desc py-3 text-center px-2 ">{{ product.description}}</td>
                         <td class="px-1 ">
+                            {% if perms.product.edit_catalog %}
                             <button type="button" class="delete py-1 px-3 text-sm font-medium disabled:bg-slate-500 disabled:border-slate-500 disabled:hover:text-gray-900 text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
                                 Delete
                             </button>
+                            {% endif %}
                         </td>
                         <td class="py-3 text-center px-2">
                             <button class="hover:text-yellow-500">
@@ -107,9 +117,10 @@
                 btnDel[index].disabled = !btnDel[index].disabled;
             }
         });
-
+    </script>
+    <script>
         var prodId = document.getElementsByClassName('product_id');
-
+    
         //delete button to delete product
         for (let index = 0; index < btnDel.length; index++) {
             btnDel[index].addEventListener('click', function(event){
@@ -118,8 +129,8 @@
                 window.location.reload();
             });
         }
-
-        
+    </script>
+    <script>
         //for editing product
         var btnEditProd = document.getElementById('editProduct');
 
@@ -411,7 +422,8 @@
                 });
             }
         });
-
+    </script>
+    <script>
         function getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);

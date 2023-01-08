@@ -10,7 +10,7 @@ class User_Registration_Form(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name']
-    template_name = 'form/input_form.html'
+    template_name = 'form/registration_form.html'
 
 
 class Employee_Registration_Form(ModelForm):

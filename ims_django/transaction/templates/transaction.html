@@ -16,9 +16,11 @@
             
             <div class="">
                 <div class="inline-flex rounded-md shadow-sm h-[35px] " role="group">
+                    {% if perms.transaction.do_transaction %}
                     <button type="button" onclick="document.getElementById('addTransactionPage').classList.toggle('hidden')" class="editProduct py-1 px-1 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
                         Add Transaction
                     </button>
+                    {% endif %}
                     <button type="button" class="all py-1 px-2 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 ">
                         All
                     </button>
@@ -36,6 +38,7 @@
                 </div>          
             </div>
         </div>
+        {% if perms.transaction.do_transaction %}
         <div id="addTransactionPage" class="addTransactionPage h-[900px] fixed w-full top-0 left-0 pt-[25px]  px-[50px] lg:px-[200px]  2xl:px-[400px] z-30  mb-6 overflow-y-auto hidden">
             <div class="border border-gray-800 bg-gray-200 rounded-2xl px-10 py-5 shadow-lg relative max-h-screen overflow-y-auto">
                 <div class="text-center font-bold text-3xl text-gray-800">
@@ -78,6 +81,7 @@
                 </form>            
             </div>
         </div>
+        {% endif %}
         <table class="table-fixed mx-auto ">
             <thead >
                 <tr class="text-yellow-500 bg-sky-800">
