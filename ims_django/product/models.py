@@ -27,7 +27,7 @@ class Product(models.Model):
     category = models.CharField(max_length=30,blank=False, null=False)
     price = models.DecimalField(blank=False, null=False, default=0, max_digits=19, decimal_places=4, validators=[MinValueValidator(Decimal('0.00'))])
     stock = models.IntegerField(default=0, blank=False, null=False, validators=[MinValueValidator(0)])
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, max_length=1000)
     available = models.BooleanField(default=True)
 
     @classmethod

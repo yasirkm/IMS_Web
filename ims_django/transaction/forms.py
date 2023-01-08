@@ -15,7 +15,7 @@ class Add_Transaction_Detail_Form(ModelForm):
     product_id = ModelChoiceField(queryset=Product.get_catalog(), label='product')
     class Meta:
         model = Transaction_Detail
-        exclude = ('transaction_id',)
+        exclude = ('transaction_id', 'price_at_transaction')
         widgets = {
             'quantity':forms.NumberInput(attrs={'min':1})
         }

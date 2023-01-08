@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 
+{% load humanize %}
 
 {% block content %}
     <div class="mx-auto px-[50px] lg:ml-[350px] lg:mr-[50px] mt-[50px]">
@@ -87,13 +88,14 @@
                 </tr>
             </thead>
             <tbody class="text-white py-2">
+                {% for transaction, transaction_details in transaction_history%}
                 <tr class="border-b">
-                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail').classList.toggle('hidden')">1.</td>
-                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail').classList.toggle('hidden')">In</td>
-                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail').classList.toggle('hidden')">12 Juni 2022</td>
+                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{forloop.counter}}.</td>
+                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{transaction.type}}</td>
+                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{transaction.date_time}}</td>
                 </tr>
                 <tr>
-                    <td colspan="3" id="detail" class="detail text-center hidden">
+                    <td colspan="3" id="detail_{{forloop.counter}}" class="detail text-center hidden">
                         <table>
                             <thead>
                                 <tr class="border-b bg-gray-200 text-gray-900">
@@ -103,15 +105,18 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for transaction_detail in transaction_details%}
                                 <tr class="border-b">
-                                    <td class="py-3 text-center px-2 ">asadas</td>
-                                    <td class="py-3 text-center px-2 ">asdas</td>
-                                    <td class="py-3 text-center px-2 ">asdasd</td>
+                                    <td class="py-3 text-center px-2 ">{{transaction_detail.product_id.name}}</td>
+                                    <td class="py-3 text-center px-2 ">{{transaction_detail.quantity}}</td>
+                                    <td class="py-3 text-center px-2 ">Rp.{{transaction_detail.price_at_transaction|floatformat:2|intcomma}}</td>
                                 </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
         

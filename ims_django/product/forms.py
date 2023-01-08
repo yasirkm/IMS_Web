@@ -7,10 +7,10 @@ from .models import Product
 class Add_Product_Form(ModelForm):
     class Meta:
         model = Product
-        fields = '__all__'
-        # exclude = ('available',)
+        # fields = '__all__'
+        exclude = ('available', 'price', 'stock')
         widgets = {
-            'available':forms.HiddenInput(),
+            # 'available':forms.HiddenInput(),
             'name': forms.TextInput(attrs={'class':''}),
             'category': forms.TextInput(attrs={'class':''}),
             'description': forms.Textarea(attrs={'class':''})

@@ -1,9 +1,12 @@
 from datetime import datetime
+from decimal import Decimal
 
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 from product.models import Product
+from django.forms.models import fields_for_model
+
 
 # Create your models here.
 
@@ -57,7 +60,7 @@ class Transaction(models.Model):
 
     @classmethod
     def get_transactions(cls):
-        transactions = cls.objects.all()
+        transactions = cls.objects.all().order_by('transaction_id')
         return transactions
 
     
@@ -70,6 +73,7 @@ class Transaction_Detail(models.Model):
     product_id = models.ForeignKey(
         Product, on_delete=models.PROTECT, blank=False, null=False)
     quantity = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
+    price_at_transaction = models.DecimalField(blank=False, null=False, default=0, max_digits=19, decimal_places=4, validators=[MinValueValidator(Decimal('0.00'))])
 
     @classmethod
     def get_transaction_details(cls, transaction):

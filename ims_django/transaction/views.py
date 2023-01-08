@@ -14,11 +14,13 @@ from .forms import *
 def transaction_view(request):
     detail_template_form = Add_Transaction_Detail_Form()
     page_title = 'Transaction'
+    transaction_history = Transaction.get_transaction_history()
     if request.method=='GET':
         transaction_form = Add_Transaction_Form()
         transaction_detail_form = Add_Transaction_Detail_Form()
         context = {'title': page_title, 'detail_template_form':detail_template_form,
-                'transaction_form':transaction_form, 'transaction_detail_forms':[transaction_detail_form,]}
+                'transaction_form':transaction_form, 'transaction_detail_forms':[transaction_detail_form,],
+                'transaction_history':transaction_history}
         return render(request, 'transaction.html', context)
 
     elif request.method=='POST':
@@ -56,6 +58,7 @@ def transaction_view(request):
                 for new_transaction_detail in new_transaction_details:
                     new_transaction_detail.transaction_id = new_transaction
                     product = new_transaction_detail.product_id
+                    new_transaction_detail.price_at_transaction = product.price
                     if new_transaction.type == 'OUT':
                         product.stock -= new_transaction_detail.quantity
                     else:
@@ -66,6 +69,7 @@ def transaction_view(request):
                 print(transaction_detail_form.errors)
                 print(transaction_detail_form.non_field_errors())
                 context = {'title': page_title, 'detail_template_form':detail_template_form,
-                'transaction_form':transaction_form, 'transaction_detail_forms':transaction_detail_forms}
+                'transaction_form':transaction_form, 'transaction_detail_forms':transaction_detail_forms,
+                'transaction_history':transaction_history}
                 return render(request, 'transaction.html', context)
         return redirect('transaction')
