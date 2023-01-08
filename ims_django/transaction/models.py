@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 from product.models import Product
@@ -68,7 +69,7 @@ class Transaction_Detail(models.Model):
         Transaction, on_delete=models.PROTECT, blank=False, null=False)
     product_id = models.ForeignKey(
         Product, on_delete=models.PROTECT, blank=False, null=False)
-    quantity = models.IntegerField(blank=False, null=False)
+    quantity = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(0)])
 
     @classmethod
     def get_transaction_details(cls, transaction):

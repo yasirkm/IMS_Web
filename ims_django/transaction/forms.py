@@ -1,4 +1,5 @@
 from django.forms import ModelForm, ModelChoiceField
+from django import forms
 from .models import Transaction, Transaction_Detail
 
 from product.models import Product
@@ -15,4 +16,7 @@ class Add_Transaction_Detail_Form(ModelForm):
     class Meta:
         model = Transaction_Detail
         exclude = ('transaction_id',)
+        widgets = {
+            'quantity':forms.NumberInput(attrs={'min':0})
+        }
     template_name = 'form/add_transaction_form.html'
