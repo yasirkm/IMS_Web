@@ -13,7 +13,6 @@ class Employee(models.Model):
             ("configure_dynamic_pricing", "Can configure dynamic pricing"),
         ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    employee_id = models.AutoField(primary_key=True)
     phone_number = models.CharField(max_length=16, blank=False, null=False)
     address = models.CharField(max_length=255)
 

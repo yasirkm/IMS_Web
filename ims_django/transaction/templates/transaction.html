@@ -36,6 +36,7 @@
             </div>
         </div>
         <div id="addTransactionPage" class="addTransactionPage h-[900px] fixed w-full top-0 left-0 pt-[55px]  px-[50px] lg:px-[200px]  2xl:px-[400px] z-30  mb-6 hidden">
+<<<<<<< HEAD
             <div class=" border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative ">
                 <div class="text-center font-bold text-3xl text-gray-800">
                     Add Transaction
@@ -80,6 +81,25 @@
                     </div>
                     <br>
                     <button type="button" onclick="document.getElementById('addTransactionPage').classList.toggle('hidden')" class="save mt-5 mb-5 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+=======
+            <div class="border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative ">
+                <div class="text-center font-bold text-3xl text-gray-800">
+                    Add Transaction
+                </div>
+                <div hidden>
+                    {{detail_template_form}}
+                </div>
+                <form action="{% url 'transaction' %}" method="POST">
+                    {%  csrf_token %}
+                    <div class="grid md:grid-cols-2 md:gap-6">
+                        {{transaction_form}}
+                    </div>
+                    <div>
+                        {{transaction_detail_form}}
+                        {{transaction_detail_form}}
+                    </div>
+                    <button class="save mt-6 mb-6 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+>>>>>>> 060becc (added add transaction)
                         Save Transaction
                     </button>  
                     <button type="button" onclick="document.getElementById('addTransactionPage').classList.toggle('hidden')" class="close absolute right-5 top-3 px-3 py-1 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">

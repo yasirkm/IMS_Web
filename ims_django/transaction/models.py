@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.db import models
-from employee.models import Employee
+from django.contrib.auth.models import User
 from product.models import Product
 
 # Create your models here.
@@ -14,7 +14,7 @@ class Transaction(models.Model):
             ("do_transaction", "Can add new transactions"),
         ]
     transaction_id = models.AutoField(primary_key=True)
-    employee_id = models.ForeignKey(Employee, on_delete=models.PROTECT, blank=False, null=False)
+    employee_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
     type = models.TextField(blank=False, null=False)
     receipt_number = models.TextField()
     date_time = models.DateTimeField(blank=False, null=False)
@@ -47,6 +47,8 @@ class Transaction(models.Model):
     def get_transactions(cls):
         transactions = cls.objects.all()
         return transactions
+
+    
 
 
 class Transaction_Detail(models.Model):
