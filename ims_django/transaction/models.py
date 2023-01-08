@@ -26,10 +26,14 @@ class Transaction(models.Model):
             employee_id=employee_id, type=type, receipt_number=receipt_number)
         new_transaction_details = []
         for product, quantity in transaction_details:
-            new_transaction_details.append(
-                Transaction_Detail(new_transaction, product, quantity))
+            new_transaction_details.append(Transaction_Detail(new_transaction, product, quantity))
+            if type == 'OUT':
+                product-=quantity
+            else:
+                product.stock+=quantity
 
         new_transaction.save()
+        product.save()
         for new_transaction_detail in new_transaction_details:
             new_transaction_detail.save()
 
@@ -49,8 +53,6 @@ class Transaction(models.Model):
         return transactions
 
     
-
-
 class Transaction_Detail(models.Model):
     class Meta:
         unique_together = (('transaction_id', 'product_id'),)
