@@ -40,7 +40,7 @@
                 <div class="text-center font-bold text-3xl text-gray-800">
                     Add Transaction
                 </div>
-                <div hidden>
+                <div id='template_detail_form' hidden>
                     {{detail_template_form}}
                 </div>
                 <form action="{% url 'transaction' %}" method="POST">
@@ -48,11 +48,14 @@
                     <div class="grid md:grid-cols-2 md:gap-6">
                         {{transaction_form}}
                     </div>
-                    <div>
+                    <div id="detail_forms">
                         {% for form in transaction_detail_forms%}
-                        {{ form }}
+                        <div class="detail_form">
+                            {{ form }}
+                        </div>
                         {% endfor %}
                     </div>
+                    <br>
                     <div class="inline-flex">
                         <button type="button" onclick="cloneAdd()" class="addProduct mt-5 mb-1 py-1 px-3 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500" id="addBtn">
                             Add More
@@ -98,13 +101,15 @@
     <script src="http://code.jquery.com/jquery-1.4.2.js" type="text/javascript"></script>
     <script>
         function cloneAdd(){
-            var div = document.getElementById('formProduct'),
+            var div = document.getElementById('template_detail_form'),
             clone = div.cloneNode(true); // true means clone all childNodes and all event handlers
-            document.getElementById('transactPage').appendChild(clone);
+            clone.removeAttribute("hidden")
+            clone.setAttribute('class', 'detail_form')
+            document.getElementById('detail_forms').appendChild(clone);
         }
 
         function deleteClone(){
-            var element = document.getElementById("formProduct");
+            var element = document.querySelector(".detail_form");
             element.parentNode.removeChild(element);
         }
     </script>
