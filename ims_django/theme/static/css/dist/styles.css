@@ -785,6 +785,22 @@ select {
   top: 0.75rem;
 }
 
+.top-1 {
+  top: 0.25rem;
+}
+
+.-top-2 {
+  top: -0.5rem;
+}
+
+.-top-3 {
+  top: -0.75rem;
+}
+
+.-top-4 {
+  top: -1rem;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -963,6 +979,10 @@ select {
 
 .h-5 {
   height: 1.25rem;
+}
+
+.max-h-screen {
+  max-height: 100vh;
 }
 
 .w-\[43px\] {
@@ -1315,8 +1335,17 @@ select {
   padding-right: 0.25rem;
 }
 
+.py-5 {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
 .pt-\[55px\] {
   padding-top: 55px;
+}
+
+.pt-\[25px\] {
+  padding-top: 25px;
 }
 
 .text-center {
