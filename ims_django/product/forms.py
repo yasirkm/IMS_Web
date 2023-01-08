@@ -10,7 +10,10 @@ class Add_Product_Form(ModelForm):
         fields = '__all__'
         # exclude = ('available',)
         widgets = {
-            'available':forms.HiddenInput()
+            'available':forms.HiddenInput(),
+            'name': forms.TextInput(attrs={'class':''}),
+            'category': forms.TextInput(attrs={'class':''}),
+            'description': forms.Textarea(attrs={'class':''})
         }
 
     template_name = 'form/input_form.html'

@@ -16,7 +16,7 @@
                     <button id="editProduct"  type="button" class="editProduct py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
                         Edit Product
                     </button>
-                    <button id="save"  type="button" class="saveChanges py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
+                    <button id="save" onclick="window.location.reload();" type="button" class="saveChanges py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
                         Save Changes
                     </button>
                     <button id="editCatalog"  type="button" class="EditCatalog py-1 px-3 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mr-3">
@@ -33,8 +33,8 @@
             </div>
         </div>
         <div id="addProdPage" class="addProdPage h-[900px] fixed w-full top-0 left-0 pt-[55px] hidden px-[50px] lg:px-[200px]  2xl:px-[400px] z-30  mb-6">
-            <div class="border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative ">
-                <div class="text-center font-bold text-3xl text-gray-800">
+            <div class="border border-gray-800 bg-gray-200 rounded-2xl px-10 py-10 shadow-lg relative overflow-y-auto">
+                <div class="text-center font-bold text-3xl text-gray-800 ">
                     Add Product
                 </div>
                 <form action="{% url 'catalog' %}" method="POST">
@@ -50,7 +50,7 @@
             </div>
     </div>
         <div>
-            <table class="table-fixed mx-auto">
+            <table class="table table-fixed mx-auto">
                 <thead >
                     <tr class="text-yellow-500 bg-sky-800">
                         <th class="w-[50px] px-2 py-3 font-semibold">No</th>
@@ -83,6 +83,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"  stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
                                 </svg>
+                        <td></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -107,28 +108,38 @@
             }
         });
 
-        //for editing and saving product
+        var prodId = document.getElementsByClassName('product_id');
+
+        //delete button to delete product
+        for (let index = 0; index < btnDel.length; index++) {
+            btnDel[index].addEventListener('click', function(event){
+                console.log(index)
+                deleteProduct({'id':prodId[index].innerHTML})
+                window.location.reload();
+            });
+        }
+
+        
+        //for editing product
         var btnEditProd = document.getElementById('editProduct');
-        var saveProd = document.getElementById('save');
 
         var prod = document.getElementsByClassName('product');
         var cate = document.getElementsByClassName('category');
-        var cost = document.getElementsByClassName('cost');
-        var stock = document.getElementsByClassName('stock');
-        var desc = document.getElementsByClassName('desc');
+        var prodCost = document.getElementsByClassName('cost');
+        var prodStock = document.getElementsByClassName('stock');
+        var prodDesc = document.getElementsByClassName('desc');
 
         btnEditProd.addEventListener('click', function(event){
             //console.log(cells);
             //for column product
-            for (var i = 0; i < prod.length; i++){
-                prod[i].onclick = function(){
+            for (let index = 0; index < prod.length; index++) {
+                prod[index].addEventListener('click', function(event){
+                    console.log(index)
                     if (this.hasAttribute('data-clicked')) {
                         return;
-                    }
-
+                    }                    
                     this.setAttribute('data-clicked', 'yes');
                     this.setAttribute('data-text', this.innerHTML);
-
                     var input = document.createElement('input');
                     input.setAttribute('type', 'text');
                     input.value = this.innerHTML;
@@ -147,16 +158,8 @@
                         if (orig_text != current_text) {
                             //there are changes in the cell's text
                             //change data into database
-                            fetch('', {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ "id": 78912 })
-                            })
-                            .then(response => response.json())
-                            .then(response => console.log(JSON.stringify(response)))
+                            var prodId = document.getElementsByClassName('product_id');
+                            updateProduct({'id':prodId[index].innerHTML, 'name':current_text});
                             td.removeAttribute('data-clicked');
                             td.removeAttribute('data-text');
                             td.innerHTML = current_text;
@@ -181,19 +184,18 @@
                     this.style.cssText = 'padding: 0px 0px'
                     this.append(input);
                     this.firstElementChild.select();
-                }
+                });
             }
 
             //for column category
-            for (var i = 0; i < cate.length; i++){
-                cate[i].onclick = function(){
+            for (let index = 0; index < cate.length; index++) {
+                cate[index].addEventListener('click', function(event){
+                    console.log(index)
                     if (this.hasAttribute('data-clicked')) {
                         return;
-                    }
-
+                    }                    
                     this.setAttribute('data-clicked', 'yes');
                     this.setAttribute('data-text', this.innerHTML);
-
                     var input = document.createElement('input');
                     input.setAttribute('type', 'text');
                     input.value = this.innerHTML;
@@ -212,16 +214,8 @@
                         if (orig_text != current_text) {
                             //there are changes in the cell's text
                             //change data into database
-                            fetch('', {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ "id": 78912 })
-                            })
-                            .then(response => response.json())
-                            .then(response => console.log(JSON.stringify(response)))
+                            var prodId = document.getElementsByClassName('product_id');
+                            updateProduct({'id':prodId[index].innerHTML, 'category':current_text});
                             td.removeAttribute('data-clicked');
                             td.removeAttribute('data-text');
                             td.innerHTML = current_text;
@@ -246,19 +240,18 @@
                     this.style.cssText = 'padding: 0px 0px'
                     this.append(input);
                     this.firstElementChild.select();
-                }
+                });
             }
 
             //for column cost
-            for (var i = 0; i < cost.length; i++){
-                cost[i].onclick = function(){
+            for (let index = 0; index < prodCost.length; index++) {
+                prodCost[index].addEventListener('click', function(event){
+                    console.log(index)
                     if (this.hasAttribute('data-clicked')) {
                         return;
-                    }
-
+                    }                    
                     this.setAttribute('data-clicked', 'yes');
                     this.setAttribute('data-text', this.innerHTML);
-
                     var input = document.createElement('input');
                     input.setAttribute('type', 'text');
                     input.value = this.innerHTML;
@@ -277,16 +270,8 @@
                         if (orig_text != current_text) {
                             //there are changes in the cell's text
                             //change data into database
-                            fetch('', {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ "id": 78912 })
-                            })
-                            .then(response => response.json())
-                            .then(response => console.log(JSON.stringify(response)))
+                            var prodId = document.getElementsByClassName('product_id');
+                            updateProduct({'id':prodId[index].innerHTML, 'price':current_text});
                             td.removeAttribute('data-clicked');
                             td.removeAttribute('data-text');
                             td.innerHTML = current_text;
@@ -311,19 +296,18 @@
                     this.style.cssText = 'padding: 0px 0px'
                     this.append(input);
                     this.firstElementChild.select();
-                }
+                });
             }
 
             //for column stock
-            for (var i = 0; i < stock.length; i++){
-                stock[i].onclick = function(){
+            for (let index = 0; index < prodStock.length; index++) {
+                prodStock[index].addEventListener('click', function(event){
+                    console.log(index)
                     if (this.hasAttribute('data-clicked')) {
                         return;
-                    }
-
+                    }                    
                     this.setAttribute('data-clicked', 'yes');
                     this.setAttribute('data-text', this.innerHTML);
-
                     var input = document.createElement('input');
                     input.setAttribute('type', 'text');
                     input.value = this.innerHTML;
@@ -342,16 +326,8 @@
                         if (orig_text != current_text) {
                             //there are changes in the cell's text
                             //change data into database
-                            fetch('', {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ "id": 78912 })
-                            })
-                            .then(response => response.json())
-                            .then(response => console.log(JSON.stringify(response)))
+                            var prodId = document.getElementsByClassName('product_id');
+                            updateProduct({'id':prodId[index].innerHTML, 'stock':parseInt(current_text)});
                             td.removeAttribute('data-clicked');
                             td.removeAttribute('data-text');
                             td.innerHTML = current_text;
@@ -376,19 +352,18 @@
                     this.style.cssText = 'padding: 0px 0px'
                     this.append(input);
                     this.firstElementChild.select();
-                }
+                });
             }
 
             //for column description
-            for (var i = 0; i < desc.length; i++){
-                desc[i].onclick = function(){
+            for (let index = 0; index < prodDesc.length; index++) {
+                prodDesc[index].addEventListener('click', function(event){
+                    console.log(index)
                     if (this.hasAttribute('data-clicked')) {
                         return;
-                    }
-
+                    }                    
                     this.setAttribute('data-clicked', 'yes');
                     this.setAttribute('data-text', this.innerHTML);
-
                     var input = document.createElement('input');
                     input.setAttribute('type', 'text');
                     input.value = this.innerHTML;
@@ -407,16 +382,8 @@
                         if (orig_text != current_text) {
                             //there are changes in the cell's text
                             //change data into database
-                            fetch('', {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ "id": 78912 })
-                            })
-                            .then(response => response.json())
-                            .then(response => console.log(JSON.stringify(response)))
+                            var prodId = document.getElementsByClassName('product_id');
+                            updateProduct({'id':prodId[index].innerHTML, 'description':current_text});
                             td.removeAttribute('data-clicked');
                             td.removeAttribute('data-text');
                             td.innerHTML = current_text;
@@ -441,9 +408,40 @@
                     this.style.cssText = 'padding: 0px 0px'
                     this.append(input);
                     this.firstElementChild.select();
-                }
+                });
             }
         });
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+          }
+          
+          function updateProduct(data) // data = {'id':id, 'FIELD_NAME1':new_value, 'FIELD_NAME2':new_value}
+          {
+              var csrftoken = getCookie('csrftoken')
+              data = JSON.stringify(data);
+              var productUpdater = new XMLHttpRequest();
+              productUpdater.open( "PATCH", window.location.href, false ); // false for synchronous request
+              productUpdater.setRequestHeader('Content-Type', 'application/json');
+              productUpdater.setRequestHeader('X-CSRFToken', csrftoken)
+              productUpdater.send( data );
+              return productUpdater.responseText;
+          }
+          
+          
+          function deleteProduct(data) // data = // data = {'id':id}
+          {
+              var csrftoken = getCookie('csrftoken')
+              data = JSON.stringify(data);
+              var productDeleter = new XMLHttpRequest();
+              productDeleter.open( "DELETE", window.location.href, false ); // false for synchronous request
+              productDeleter.setRequestHeader('Content-Type', 'application/json');
+              productDeleter.setRequestHeader('X-CSRFToken', csrftoken)
+              productDeleter.send( data );
+              return productDeleter.responseText;
+          }
     </script>
     
 
