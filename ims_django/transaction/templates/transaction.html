@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+
+{% load humanize %}
+
+{% block content %}
+    <div class="mx-auto px-[50px] lg:ml-[350px] lg:mr-[50px] mt-[50px]">
+        <div class="text-5xl text-white font-bold mb-3">Transaction</div>
+        <hr class="border-yellow-500">
+        <div class="my-3 flex flex-col sm:flex-row justify-between gap-2">
+            <div class="">
+                <div class="text-yellow-500 text-xl font-semibold">
+                    Transaction History
+                </div>
+            </div>
+            
+            <div class="">
+                <div class="inline-flex rounded-md shadow-sm h-[35px] " role="group">
+                    {% if perms.transaction.do_transaction %}
+                    <button type="button" onclick="document.getElementById('addTransactionPage').classList.toggle('hidden')" class="editProduct py-1 px-1 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 mx-[1px]">
+                        Add Transaction
+                    </button>
+                    {% endif %}
+                    <button type="button" class="all py-1 px-2 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 ">
+                        All
+                    </button>
+                    <button type="button" class="filter py-1 px-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                            </svg>
+                    </button>
+                    <button type="button" class="searchButton py-1 px-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500 ml-[1px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                    </button>
+                    <input type="text" placeholder="Prod/TransactionID" class="search w-[160px] px-2 py-1 focus:ring-yellow-500">
+                </div>          
+            </div>
+        </div>
+        {% if perms.transaction.do_transaction %}
+        <div id="addTransactionPage" class="addTransactionPage h-[900px] fixed w-full top-0 left-0 pt-[25px]  px-[50px] lg:px-[200px]  2xl:px-[400px] z-30  mb-6 overflow-y-auto hidden">
+            <div class="border border-gray-800 bg-gray-200 rounded-2xl px-10 py-5 shadow-lg relative max-h-screen overflow-y-auto">
+                <div class="text-center font-bold text-3xl text-gray-800">
+                    Add Transaction
+                </div>
+                <div id='template_detail_form' hidden>
+                    {{detail_template_form}}
+                </div>
+                <form action="{% url 'transaction' %}" method="POST">
+                    {%  csrf_token %}
+                    <div>
+                        {{transaction_form}}
+                    </div>
+                    <br>
+                    <div id="detail_forms">
+                        {% for form in transaction_detail_forms%}
+                        <div class="detail_form">
+                            {{ form }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <div class="inline-flex">
+                        <button type="button" onclick="cloneAdd()" class="addProduct mt-5 mb-1 py-1 px-3 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500" id="addBtn">
+                            Add More
+                        </button>
+                        <br>
+                        <button type="button" onclick="deleteClone()" class="addProduct mt-5 mb-1 ml-5 py-1 px-3 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500" id="addBtn">
+                            Delete
+                        </button>
+                    </div>
+                    <br>
+                    <button class="save mt-6 mb-6 saveProduct py-1 px-3 text-[20px] font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                        Save Transaction
+                    </button>  
+                    <button type="button" onclick="document.getElementById('addTransactionPage').classList.toggle('hidden')" class="close absolute right-5 top-3 px-3 py-1 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
+                        X
+                    </button>
+                    
+                </form>            
+            </div>
+        </div>
+        {% endif %}
+        <table class="table-fixed mx-auto ">
+            <thead >
+                <tr class="text-yellow-500 bg-sky-800">
+                    <th class="w-[150px] px-2 py-2 font-semibold">No</th>
+                    <th class="w-[200px] 2xl:w-[400px] px-2 py-3 font-semibold">Transaction Type</th>
+                    <th class="w-[500px] 2xl:w-[400px] px-2 py-3 font-semibold">Date</th>
+                
+                </tr>
+            </thead>
+            <tbody class="text-white py-2">
+                {% for transaction, transaction_details in transaction_history%}
+                <tr class="border-b">
+                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{forloop.counter}}.</td>
+                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{transaction.type}}</td>
+                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{transaction.date_time}}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" id="detail_{{forloop.counter}}" class="detail text-center hidden">
+                        <table>
+                            <thead>
+                                <tr class="border-b bg-gray-200 text-gray-900">
+                                    <th class="w-[500px] 2xl:w-[400px] px-2 py-2 font-semibold border-r border-gray-900">Nama</th>
+                                    <th class="w-[150px] px-2 py-3 font-semibold border-r border-gray-900">Jumlah</th>
+                                    <th class="w-[200px] 2xl:w-[400px] px-2 py-3 font-semibold ">harga</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction_detail in transaction_details%}
+                                <tr class="border-b">
+                                    <td class="py-3 text-center px-2 ">{{transaction_detail.product_id.name}}</td>
+                                    <td class="py-3 text-center px-2 ">{{transaction_detail.quantity}}</td>
+                                    <td class="py-3 text-center px-2 ">Rp.{{transaction_detail.price_at_transaction|floatformat:2|intcomma}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+    <script src="http://code.jquery.com/jquery-1.4.2.js" type="text/javascript"></script>
+    <script>
+        function cloneAdd(){
+            var div = document.getElementById('template_detail_form'),
+            clone = div.cloneNode(true); // true means clone all childNodes and all event handlers
+            clone.removeAttribute("hidden")
+            clone.setAttribute('class', 'detail_form')
+            document.getElementById('detail_forms').appendChild(clone);
+        }
+
+        function deleteClone(){
+            forms = document.querySelectorAll(".detail_form");
+            var element = forms[forms.length-1]
+            element.parentNode.removeChild(element);
+        }
+    </script>
+{% endblock %}

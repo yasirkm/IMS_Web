@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+    <div class="mx-auto px-[50px] lg:ml-[350px] lg:mr-[50px] mt-[50px] relative">
+        <div class=" text-yellow-500 text-2xl font-semibold mb-3">
+            Choose User Department
+        </div>
+        <hr class="border-yellow-500">
+        <div class="container my-5 mx-auto text-white text-lg grid gap-6 sm:grid-cols-2 md:grid-cols-3 justify-items-center ">
+            <div>
+                <a href="{% url 'register' %}?department=Management">
+                    <img src="{% static 'img/management.png' %}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2 active:ring-yellow-500 duration-100 shadow-2xl" on>
+                </a>
+                <a href="{% url 'register' %}?department=">
+                    <div class="text-center hover:underline">Management</div>
+                </a>   
+            </div>
+            <div>
+                <a href="{% url 'register' %}?department=Development">
+                    <img src="{% static 'img/pengembangan.png' %}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
+                </a>
+                <a href="{% url 'register' %}?department=">
+                    <div class="text-center hover:underline">Pengembangan</div>
+                </a>
+            </div>
+            <div>
+                <a href="{% url 'register' %}?department=Production">
+                    <img src="{% static 'img/production.png' %}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
+                </a>
+                <a href="{% url 'register' %}?department=">
+                    <div class="text-center hover:underline">Produksi</div>
+                </a>
+            </div>
+            <div>
+                <a href="{% url 'register' %}?department=Sales">
+                    <img src="{% static 'img/sales.png' %}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2 active:ring-yellow-500 duration-100 shadow-2xl">
+                </a>
+                <a href="{% url 'register' %}?department=">
+                    <div class="text-center hover:underline">Sales</div>
+                </a>
+            </div>
+            <div>
+                <a href="{% url 'register' %}?department=Storage">
+                    <img src="{%static 'img/storage.png'%}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
+                </a>
+                <a href="{% url 'register' %}?department=">
+                    <div class="text-center hover:underline">Storage</div>
+                </a>
+            </div>
+            <div>
+                <a href="{% url 'register' %}?department=Finance">
+                    <img src="{%static 'img/keuangan.png'%}" alt="" class="rounded-full p-1 bg-sky-300 hover:bg-sky-400 active:bg-sky-600 w-[140px] active:ring-2  active:ring-yellow-500 duration-100 shadow-2xl">
+                </a>
+                <a href="{% url 'register' %}?department=">
+                    <div class="text-center hover:underline">Keuangan</div>
+                </a>
+                
+                
+            </div>
+        </div>
+    </div>
+{% endblock %}

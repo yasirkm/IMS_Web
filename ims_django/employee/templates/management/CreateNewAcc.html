@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="mx-auto px-[50px] lg:ml-[350px] lg:mr-[50px] mt-[50px] relative">
+        <div class=" text-yellow-500 text-2xl font-semibold mb-3">
+            Register New Account
+        </div>
+        <hr class="border-yellow-500">
+        <div class="sm:w-[400px] md:w-[500px] xl:w-[600px] py-8 px-10 rounded-lg shadow-2xl text-lg bg-sky-600 mt-[50px] mx-auto w-[330px]">
+            <form class=" relative" method="POST" action="{% url 'register' %}">
+                {% csrf_token %}
+                {{ user_form }}
+                {{ profile_form }}
+                <button class="bg-[#FBBC05] p-2 mt-3 duration-300 hover:bg-[#ce9f13] font-bold text-gray-900 rounded-lg">Register Account</button>
+            </form>
+        </div>
+{% endblock %}

@@ -1,0 +1,7 @@
+<form method="POST" action="{% url 'test' %}">
+    {% csrf_token %}
+    {% for form in formset %}
+        {{form}}
+    {% endfor %}
+    <input type="submit">
+</form>
