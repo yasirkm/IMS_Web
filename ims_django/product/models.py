@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+from decimal import Decimal
 
 # Create your models here.
 
@@ -22,8 +24,8 @@ class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, blank=False, null=False)
     category = models.CharField(max_length=30,blank=False, null=False)
-    price = models.DecimalField(blank=False, null=False, default=0, max_digits=19, decimal_places=4, min_value=0)
-    stock = models.IntegerField(default=0, blank=False, null=False, min_value=0)
+    price = models.DecimalField(blank=False, null=False, default=0, max_digits=19, decimal_places=4, validators=[MinValueValidator(Decimal('0.00'))])
+    stock = models.IntegerField(default=0, blank=False, null=False, validators=[MinValueValidator(0)])
     description = models.TextField(blank=True, null=True)
     available = models.BooleanField(default=True)
 
