@@ -109,7 +109,8 @@
         }
 
         function deleteClone(){
-            var element = document.querySelector(".detail_form");
+            forms = document.querySelectorAll(".detail_form");
+            var element = forms[forms.length-1]
             element.parentNode.removeChild(element);
         }
     </script>
