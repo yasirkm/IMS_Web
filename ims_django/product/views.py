@@ -45,19 +45,20 @@ def catalog_view(request):
             'stock':'product.edit_product_stock',
             'available':'product.edit_catalog',
         }
-        new_fields_value = json.loads(request.body)
+        data = json.loads(request.body)
+        
         try:
-            product_id = new_fields_value['id']
+            product_id = data['id']
+
+            new_fields_value = {field:value for field,value in data.items() if field != 'id'}
+
             product = Product.get_catalog().get(pk=product_id)
-            for field, permission in field_permission.items():
-                print(field, permission)
-                if field in new_fields_value:
-                    print(field, permission)
-                    if request.user.has_perm(permission):
-                        print(f'added {field}')
-                        setattr(product, field, new_fields_value[field])
-                    else:
-                        raise PermissionError(f'You do not have the permission to edit product {field}')
+
+            for field, value in new_fields_value.items():
+                if request.user.has_perm(field_permission[field]):
+                    setattr(product, field, value)
+                else:
+                    raise PermissionError(f'You do not have the permission to edit product {field}')
 
             product.full_clean()
             product.save()

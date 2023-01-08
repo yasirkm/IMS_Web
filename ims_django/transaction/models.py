@@ -14,8 +14,7 @@ class Transaction(models.Model):
             ("do_transaction", "Can add new transactions"),
         ]
     transaction_id = models.AutoField(primary_key=True)
-    employee_id = models.ForeignKey(
-        Employee, on_delete=models.PROTECT, blank=False, null=False)
+    employee_id = models.ForeignKey(Employee, on_delete=models.PROTECT, blank=False, null=False)
     type = models.TextField(blank=False, null=False)
     receipt_number = models.TextField()
     date_time = models.DateTimeField(blank=False, null=False)
@@ -34,6 +33,21 @@ class Transaction(models.Model):
         for new_transaction_detail in new_transaction_details:
             new_transaction_detail.save()
 
+    @classmethod
+    def get_transaction_history(cls):
+        transactions = cls.get_transactions()
+        transaction_history = []
+        for transaction in transactions:
+            transaction_detail = Transaction_Detail.get_transaction_details(transaction)
+            transaction_history.append((transaction, transaction_detail))
+
+        return transaction_history
+
+    @classmethod
+    def get_transactions(cls):
+        transactions = cls.objects.all()
+        return transactions
+
 
 class Transaction_Detail(models.Model):
     class Meta:
@@ -44,3 +58,8 @@ class Transaction_Detail(models.Model):
     product_id = models.ForeignKey(
         Product, on_delete=models.PROTECT, blank=False, null=False)
     quantity = models.IntegerField(blank=False, null=False)
+
+    @classmethod
+    def get_transaction_details(cls, transaction):
+        transaction_details = cls.objects.filter(transaction_id=transaction)
+        return transaction_details
