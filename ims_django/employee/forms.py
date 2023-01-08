@@ -19,7 +19,7 @@ class Employee_Registration_Form(ModelForm):
         exclude = ('user',)
         widgets ={
             'department': forms.HiddenInput(),
-            'address': forms.TextInput(attrs={'class':'custom-class'})
+            'address': forms.Textarea(attrs={'class':'custom-class'})
         }
     template_name = 'form/registration_form.html'
     

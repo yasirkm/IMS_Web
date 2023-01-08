@@ -76,11 +76,11 @@
                     <tr class="border-b">
                         <td class="product_id" hidden>{{ product.product_id }}</td>
                         <td class="py-3 text-center px-2 ">{{ forloop.counter }}.</td>
-                        <td class="product py-3 text-center px-2">{{ product.name }}</td>
-                        <td class="category py-3 text-center px-2">{{ product.category }}</td>
-                        <td class="cost py-3 text-center px-2">Rp.{{ product.price|floatformat:2|intcomma }}</td>
-                        <td class="stock py-3 text-center px-2">{{ product.stock }}</td>
-                        <td class="desc py-3 text-center px-2 ">{{ product.description}}</td>
+                        <td class="product py-3 text-center px-2">{% if perms.product.view_product_name %}{{ product.name }}{% else %} --- {%endif%}</td>
+                        <td class="category py-3 text-center px-2">{% if perms.product.view_product_category %}{{ product.category }}{% else %} --- {%endif%}</td>
+                        <td class="cost py-3 text-center px-2">Rp.{% if perms.product.view_product_price %}{{ product.price|floatformat:2|intcomma }}{% else %} --- {%endif%}</td>
+                        <td class="stock py-3 text-center px-2">{% if perms.product.view_product_stock %}{{ product.stock }}{% else %} --- {%endif%}</td>
+                        <td class="desc py-3 text-center px-2 ">{% if perms.product.view_product_description %}{{ product.description }}{% else %} --- {%endif%}</td>
                         <td class="px-1 ">
                             {% if perms.product.edit_catalog %}
                             <button type="button" class="delete py-1 px-3 text-sm font-medium disabled:bg-slate-500 disabled:border-slate-500 disabled:hover:text-gray-900 text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500">
