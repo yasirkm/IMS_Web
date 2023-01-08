@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
 from decimal import Decimal
 
 # Create your models here.
@@ -10,6 +10,7 @@ class Product(models.Model):
         permissions = [
             ("view_catalog", "can view catalog"),
             ("edit_catalog", "can edit catalog"),
+            ("edit_product", "can edit product"),
             ("view_product_name", "can view product name"),
             ("view_product_category", "Can view product category"),
             ("view_product_description", "Can view product description"),

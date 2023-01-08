@@ -36,6 +36,7 @@ class Employee(models.Model):
             'product.Product': [
                 'view_catalog',
                 'edit_catalog',
+                'edit_product',
                 'view_product_name',
                 'view_product_category',
                 'view_product_description',
@@ -71,6 +72,7 @@ class Employee(models.Model):
                 'view_product_description',
                 'view_product_price',
                 'view_product_stock',
+                'edit_product',
                 'edit_product_price',
             ],
             'transaction.Transaction': [
@@ -85,6 +87,7 @@ class Employee(models.Model):
                 'view_product_category',
                 'view_product_description',
                 'view_product_stock',
+                'edit_product',
                 'edit_product_name',
                 'edit_product_category',
                 'edit_product_description',
