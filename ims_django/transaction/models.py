@@ -19,6 +19,12 @@ class Transaction(models.Model):
     receipt_number = models.TextField()
     date_time = models.DateTimeField(blank=False, null=False)
 
+    TYPE_CHOOSE = [
+        ('IN', 'IN'),
+        ('OUT', 'OUT'),
+        ('RETURN', 'RETURN'),
+        ]
+
     @classmethod
     def add_transaction(cls, employee_id, type, receipt_number, transaction_details):
         date_time = datetime.now()

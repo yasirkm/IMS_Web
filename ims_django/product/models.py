@@ -20,11 +20,11 @@ class Product(models.Model):
             ("edit_product_stock", "Can edit product stock"),
         ]
     product_id = models.AutoField(primary_key=True)
-    name = models.TextField(blank=False, null=False)
-    category = models.TextField(blank=False, null=False)
-    price = models.DecimalField(blank=False, null=False, default=0, max_digits=19, decimal_places=4)
-    stock = models.IntegerField(default=0, blank=False, null=False)
-    description = models.TextField()
+    name = models.CharField(max_length=50, blank=False, null=False)
+    category = models.CharField(max_length=30,blank=False, null=False)
+    price = models.DecimalField(blank=False, null=False, default=0, max_digits=19, decimal_places=4, min_value=0)
+    stock = models.IntegerField(default=0, blank=False, null=False, min_value=0)
+    description = models.TextField(blank=True, null=True)
     available = models.BooleanField(default=True)
 
     @classmethod
