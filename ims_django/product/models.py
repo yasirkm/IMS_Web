@@ -56,3 +56,6 @@ class Product(models.Model):
     def delete(self):
         self.available = False
         self.save()
+
+    def __str__(self):
+        return self.name
