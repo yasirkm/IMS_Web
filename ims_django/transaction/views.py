@@ -24,9 +24,7 @@ def transaction_view(request):
     elif request.method=='POST':
         transaction_form = Add_Transaction_Form(request.POST)
         transaction_detail_form = Add_Transaction_Detail_Form()
-        transaction_details_data = {field:value for field, value in request.POST.items() if field in transaction_detail_form.fields and type(value) is list}
-        if not transaction_details_data:
-            transaction_details_data = {field:[value,] for field, value in request.POST.items()}
+        transaction_details_data = {field:request.POST.getlist(field) for field in transaction_detail_form.fields}
         print(transaction_details_data)
         
         employee = request.user
