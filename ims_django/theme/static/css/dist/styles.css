@@ -785,22 +785,6 @@ select {
   top: 0.75rem;
 }
 
-.top-1 {
-  top: 0.25rem;
-}
-
-.-top-2 {
-  top: -0.5rem;
-}
-
-.-top-3 {
-  top: -0.75rem;
-}
-
-.-top-4 {
-  top: -1rem;
-}
-
 .z-10 {
   z-index: 10;
 }
@@ -1061,8 +1045,36 @@ select {
   width: 500px;
 }
 
+.w-\[1000px\] {
+  width: 1000px;
+}
+
 .w-\[140px\] {
   width: 140px;
+}
+
+.w-\[1500px\] {
+  width: 1500px;
+}
+
+.w-\[2500px\] {
+  width: 2500px;
+}
+
+.w-\[00px\] {
+  width: 00px;
+}
+
+.w-\[100px\] {
+  width: 100px;
+}
+
+.w-\[350px\] {
+  width: 350px;
+}
+
+.w-\[550px\] {
+  width: 550px;
 }
 
 .table-fixed {
@@ -1325,6 +1337,11 @@ select {
   padding-right: 0.75rem;
 }
 
+.py-5 {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
 .py-3 {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
@@ -1333,15 +1350,6 @@ select {
 .px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
-}
-
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
-}
-
-.pt-\[55px\] {
-  padding-top: 55px;
 }
 
 .pt-\[25px\] {
@@ -1610,16 +1618,8 @@ select {
     width: 500px;
   }
 
-  .md\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .md\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .md\:gap-6 {
-    gap: 1.5rem;
   }
 }
 
@@ -1675,6 +1675,22 @@ select {
 
   .\32xl\:w-\[400px\] {
     width: 400px;
+  }
+
+  .\32xl\:w-\[800px\] {
+    width: 800px;
+  }
+
+  .\32xl\:w-\[00px\] {
+    width: 00px;
+  }
+
+  .\32xl\:w-\[1000px\] {
+    width: 1000px;
+  }
+
+  .\32xl\:w-\[500px\] {
+    width: 500px;
   }
 
   .\32xl\:px-\[400px\] {

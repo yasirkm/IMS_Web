@@ -86,26 +86,27 @@
             <thead >
                 <tr class="text-yellow-500 bg-sky-800">
                     <th class="w-[150px] px-2 py-2 font-semibold">No</th>
+                    <th class="w-[500px] 2xl:w-[400px] px-2 py-3 font-semibold">Employee</th>
                     <th class="w-[200px] 2xl:w-[400px] px-2 py-3 font-semibold">Transaction Type</th>
                     <th class="w-[500px] 2xl:w-[400px] px-2 py-3 font-semibold">Date</th>
-                
                 </tr>
             </thead>
             <tbody class="text-white py-2">
                 {% for transaction, transaction_details in transaction_history%}
                 <tr class="border-b">
                     <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{forloop.counter}}.</td>
+                    <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{transaction.employee_id}}</td>
                     <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{transaction.type}}</td>
                     <td class="py-3 text-center px-2 cursor-pointer" onclick="document.getElementById('detail_{{forloop.counter}}').classList.toggle('hidden')">{{transaction.date_time}}</td>
                 </tr>
                 <tr>
-                    <td colspan="3" id="detail_{{forloop.counter}}" class="detail text-center hidden">
+                    <td colspan="4" id="detail_{{forloop.counter}}" class="detail text-center hidden">
                         <table>
                             <thead>
                                 <tr class="border-b bg-gray-200 text-gray-900">
-                                    <th class="w-[500px] 2xl:w-[400px] px-2 py-2 font-semibold border-r border-gray-900">Nama</th>
-                                    <th class="w-[150px] px-2 py-3 font-semibold border-r border-gray-900">Jumlah</th>
-                                    <th class="w-[200px] 2xl:w-[400px] px-2 py-3 font-semibold ">harga</th>
+                                    <th class="w-[1000px] 2xl:w-[350px] px-2 py-2 font-semibold border-r border-gray-900">Nama</th>
+                                    <th class="w-[500px] px-2 py-3 font-semibold border-r border-gray-900">Jumlah</th>
+                                    <th class="w-[1000px] 2xl:w-[500px] px-2 py-3 font-semibold ">harga</th>
                                 </tr>
                             </thead>
                             <tbody>
