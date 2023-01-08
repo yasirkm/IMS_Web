@@ -1,6 +1,6 @@
 import json
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import *
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
@@ -27,13 +27,12 @@ def catalog_view(request):
         add_product_form = Add_Product_Form(request.POST)
         if add_product_form.is_valid():
             add_product_form.save()
-            catalog = Product.get_catalog()
-            context = {'catalog': catalog, 'title': page_title, 'form':Add_Product_Form()}
+            return redirect('catalog')
         else:
             for field in add_product_form:
                 print(field.errors)
             context = {'catalog': catalog, 'title': page_title, 'form':add_product_form}
-        return render(request, 'catalog.html', context)
+            return render(request, 'catalog.html', context)
 
     elif request.method == 'PATCH':
         response = {'success':False, 'message':None}
@@ -46,7 +45,7 @@ def catalog_view(request):
             'available':'product.edit_catalog',
         }
         data = json.loads(request.body)
-        
+
         try:
             product_id = data['id']
 
