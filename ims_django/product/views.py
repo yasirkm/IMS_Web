@@ -79,14 +79,18 @@ def catalog_view(request):
         response = {'success':False, 'message':None}
         data = json.loads(request.body)
         try:
-            product_id = data['id']
-            product = Product.get_catalog().get(pk=product_id)
-            product.delete()
-            response['success'] = True
-            response['message'] = 'Product successfully deleted'
+            if request.user.has_perm('product.edit_catalog'):
+                product_id = data['id']
+                product = Product.get_catalog().get(pk=product_id)
+                product.delete()
+                response['success'] = True
+                response['message'] = 'Product successfully deleted'
+            else:
+                raise PermissionError
         except ObjectDoesNotExist:
             response['message']='That product is not on database'
         except KeyError:
             response['message']='Invalid request sent'
-
+        except PermissionError:
+            response['message']="You don't have permission to delete product"
         return JsonResponse(response)

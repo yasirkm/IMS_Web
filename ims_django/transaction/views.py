@@ -44,18 +44,24 @@ def transaction_view(request):
                     print(data)
                     transaction_detail_form = Add_Transaction_Detail_Form(data)
                     transaction_detail_forms.append(transaction_detail_form)
-                    if not transaction_detail_form.is_valid():
+                    new_transaction_detail=transaction_detail_form.save(commit=False)
+                    if not transaction_detail_form.is_valid() or new_transaction.type=='OUT' and new_transaction_detail.product_id.stock - new_transaction_detail.quantity < 0:
                         detail_form_has_error = True
                     else:
-                        new_transaction_details.append(transaction_detail_form.save(commit=False))
+                        new_transaction_details.append()
 
                 if detail_form_has_error:
                     raise ValidationError('invalid transaction detail')
                 new_transaction.save()
                 for new_transaction_detail in new_transaction_details:
                     new_transaction_detail.transaction_id = new_transaction
+                    product = new_transaction_detail.product_id
+                    if new_transaction.type == 'OUT':
+                        product.stock -= new_transaction_detail.quantity
+                    else:
+                        product.stock += new_transaction_detail.quantity
+                    product.save()
                     new_transaction_detail.save()
-
             except ValidationError:
                 print(transaction_detail_form.errors)
                 print(transaction_detail_form.non_field_errors())

@@ -16,14 +16,15 @@ class Transaction(models.Model):
     transaction_id = models.AutoField(primary_key=True)
     employee_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
     type = models.TextField(blank=False, null=False)
-    receipt_number = models.TextField()
-    date_time = models.DateTimeField(blank=False, null=False)
-
     TYPE_CHOOSE = [
         ('IN', 'IN'),
         ('OUT', 'OUT'),
         ('RETURN', 'RETURN'),
         ]
+    type = models.CharField(blank=False, null=False, choices=TYPE_CHOOSE, max_length=10)
+    receipt_number = models.CharField(max_length=20, blank=True, null=True)
+    date_time = models.DateTimeField(blank=False, null=False)
+
 
     @classmethod
     def add_transaction(cls, employee_id, type, receipt_number, transaction_details):
