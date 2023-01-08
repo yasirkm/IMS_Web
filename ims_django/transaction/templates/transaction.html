@@ -49,8 +49,9 @@
                         {{transaction_form}}
                     </div>
                     <div>
-                        {{transaction_detail_form}}
-                        {{transaction_detail_form}}
+                        {% for form in transaction_detail_forms%}
+                        {{ form }}
+                        {% endfor %}
                     </div>
                     <div class="inline-flex">
                         <button type="button" onclick="cloneAdd()" class="addProduct mt-5 mb-1 py-1 px-3 rounded-full font-bold text-gray-900 bg-white  border border-gray-200 hover:bg-gray-100 hover:text-yellow-500 focus:z-10 focus:ring-2 focus:ring-yellow-500 focus:text-yellow-500" id="addBtn">
