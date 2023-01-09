@@ -61,7 +61,7 @@ class Employee(models.Model):
                 'view_product_description',
             ],
             'transaction.Transaction': [
-                'view_transaction',
+                'view_transaction_history',
             ]
         },
         'Finance': {
@@ -76,7 +76,7 @@ class Employee(models.Model):
                 'edit_product_price',
             ],
             'transaction.Transaction': [
-                'view_transaction',
+                'view_transaction_history',
             ]
         },
         'Storage': {
@@ -93,7 +93,7 @@ class Employee(models.Model):
                 'edit_product_description',
             ],
             'transaction.Transaction': [
-                'view_transaction',
+                'view_transaction_history',
                 'do_transaction'
             ]
         },
