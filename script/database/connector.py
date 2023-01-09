@@ -12,7 +12,10 @@ class TableNotFoundError(Exception):
 
 IN = 'IN'
 OUT = 'OUT'
-TRANSACTIONS = (IN, OUT)
+RETURN = 'RETURN'
+TRANSACTIONS = (IN, OUT, RETURN)
+
+DEPARTMENTS = ['Management', 'Storage', 'Development', 'Finance', 'Sales', 'Production']
 
 CONNECTION_PARAMS = postgre_config()
 
@@ -52,19 +55,21 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
         sql_statement = "UPDATE product SET stock=stock+%s WHERE product_id=%s;"
         cursor.execute(sql_statement, (quantity, product_id))
 
-    def _add_transaction_detail(transaction_id, product_id, quantity):
+    def _add_transaction_detail(transaction_id, product_id, quantity, price):
         '''
             Add a new record for transaction_detail.
         '''
 
-        sql_statement = 'INSERT INTO transaction_detail(transaction_id, product_id, quantity) VALUES(%s, %s, %s)'
-        cursor.execute(sql_statement, (transaction_id, product_id, quantity))
+        sql_statement = 'INSERT INTO transaction_detail(transaction_id, product_id, quantity, price_at_transaction) VALUES(%s, %s, %s, %s)'
+        cursor.execute(sql_statement, (transaction_id, product_id, quantity, price))
 
     def _add_transaction_record(employee_id, receipt_number, transaction_type, date_time):
         '''
             Add a new record for transaction.
             Return transaction_id of the added transaction
         '''
+        if transaction_type not in TRANSACTIONS:
+            raise ValueError('Invalid transaction type')
         sql_statement = 'INSERT INTO transaction(employee_id, type, receipt_number, date_time) VALUES(%s, %s, %s, %s) RETURNING transaction_id'
 
         cursor.execute(sql_statement, (employee_id, transaction_type, receipt_number, date_time))
@@ -79,8 +84,8 @@ def transact(employee_id, receipt_number, transaction_details, transaction_type,
     transaction_id = _add_transaction_record(employee_id, receipt_number, transaction_type, date_time)
 
     # Adding transaction_detail record for each transaction_details
-    for product_id, quantity in transaction_details:
-        _add_transaction_detail(transaction_id, product_id, quantity)
+    for product_id, quantity, price in transaction_details:
+        _add_transaction_detail(transaction_id, product_id, quantity, price)
         quantity = -quantity if transaction_type == OUT else quantity
         _update_product_stock_by(product_id, quantity)
 
@@ -136,7 +141,7 @@ def get_transaction_information(transaction_id, columns=('transaction_id', 'empl
 
     return transaction_information
 
-def get_transaction_details(transaction_id, columns=('transaction_id', 'product_id', 'quantity')):
+def get_transaction_details(transaction_id, columns=('transaction_id', 'product_id', 'quantity', 'price_at_transaction')):
     '''
         Return a list of attribute dictionary of transaction_details with the transaction_id in database.
     '''
@@ -235,6 +240,8 @@ def register(username, password, name, phone_number, address, department):
         Add a new record for employee table in database.
         Return employee_id of added employee.
     '''
+    if department not in DEPARTMENTS:
+        raise ValueError('Invalid Department')
     sql_statement = 'INSERT INTO employee(username, password, name, phone_number, address, department) VALUES(%s,%s,%s,%s,%s,%s) RETURNING employee_id;'
 
     params = postgre_config()

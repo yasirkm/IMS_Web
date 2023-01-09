@@ -235,7 +235,7 @@ class Menu:
         '''
 
         # Asking for input
-        transaction_type = input("Transaction type [IN/OUT]: ")
+        transaction_type = input("Transaction type [IN/OUT/RETURN]: ")
         if transaction_type not in connector.TRANSACTIONS:
             raise AbortOperation('The specified type of transaction is not supported')
 
@@ -259,13 +259,15 @@ class Menu:
             except ValueError as exc:
                 raise AbortOperation("The specified product id is invalid") from exc
 
+            product = Product(**connector.get_product_information(product_id))
+
             try:
                 quantity = int(input('Quantity: '))
                 if quantity < 1:
                     raise AbortOperation("Transaction quantity can't be less than 1")
             except ValueError as exc:
                 raise AbortOperation(f"The specified quantity for product with the id of {product_id} is invalid") from exc
-            transaction_details.append((product_id, quantity))
+            transaction_details.append((product.product_id, quantity, product.price))
 
         # Adding new transaction
         try:
@@ -294,6 +296,8 @@ class Menu:
         address = None if address == '' else address
         department = input('Department: ')
         department = None if department == '' else department
+        if department not in connector.DEPARTMENTS:
+            raise AbortOperation(f'There is no {department} department')
 
         # Registering new employee
         try:

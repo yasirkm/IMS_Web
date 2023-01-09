@@ -139,6 +139,7 @@ class Employee:
                 product = Product(**connector.get_product_information(transaction_detail.product_id))
                 print(f'product_name: {product.name}')
                 print(f'quantity: {transaction_detail.quantity}')
+                print(f'price at transaction: {transaction_detail.price_at_transaction}')
                 print()
 
         user_privilege = self.get_info_privilege()
@@ -278,7 +279,7 @@ class Can_Do_Transaction(ABC):
             Do a transaction.
             Return done transaction.
 
-            transaction_details: a tuple of product_id an its quantity
+            transaction_details: a tuple of product, its quantity, and its current price
             transaction_type: 'IN' or 'OUT'
         '''
         date_time = datetime.now()
@@ -483,10 +484,11 @@ class Transaction_Detail:
     '''
         Class which correspond to the table transaction_detail in database
     '''
-    def __init__(self, transaction_id, product_id, quantity):
+    def __init__(self, transaction_id, product_id, quantity, price_at_transaction):
         self._transaction_id = transaction_id
         self._product_id = product_id
         self._quantity = quantity
+        self._price_at_transaction = price_at_transaction
 
     @property
     def transaction_id(self):
@@ -511,3 +513,11 @@ class Transaction_Detail:
     @quantity.setter
     def quantity(self, value):
         self._quantity = value
+
+    @property
+    def price_at_transaction(self):
+        return self._price_at_transaction
+
+    @price_at_transaction.setter
+    def price_at_transaction(self, value):
+        self._price_at_transaction = value

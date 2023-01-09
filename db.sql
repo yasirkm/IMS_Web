@@ -29,7 +29,8 @@ CREATE TABLE product (
 CREATE TABLE transaction_detail (
     transaction_id INTEGER REFERENCES transaction(transaction_id),
     product_id INTEGER REFERENCES product(product_id),
-    quantity INTEGER NOT NULL
+    quantity INTEGER NOT NULL,
+    price_at_transaction INTEGER NOT NULL
 );
 
 INSERT INTO product(name, category, price, stock, description, available)
