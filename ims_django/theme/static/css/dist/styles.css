@@ -1053,30 +1053,6 @@ select {
   width: 140px;
 }
 
-.w-\[1500px\] {
-  width: 1500px;
-}
-
-.w-\[2500px\] {
-  width: 2500px;
-}
-
-.w-\[00px\] {
-  width: 00px;
-}
-
-.w-\[100px\] {
-  width: 100px;
-}
-
-.w-\[350px\] {
-  width: 350px;
-}
-
-.w-\[550px\] {
-  width: 550px;
-}
-
 .table-fixed {
   table-layout: fixed;
 }
@@ -1675,18 +1651,6 @@ select {
 
   .\32xl\:w-\[400px\] {
     width: 400px;
-  }
-
-  .\32xl\:w-\[800px\] {
-    width: 800px;
-  }
-
-  .\32xl\:w-\[00px\] {
-    width: 00px;
-  }
-
-  .\32xl\:w-\[1000px\] {
-    width: 1000px;
   }
 
   .\32xl\:w-\[500px\] {
