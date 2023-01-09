@@ -33,8 +33,7 @@ class Transaction(models.Model):
     @classmethod
     def add_transaction(cls, employee_id, type, receipt_number, transaction_details):
         date_time = datetime.now()
-        new_transaction = Transaction(
-            employee_id=employee_id, type=type, receipt_number=receipt_number)
+        new_transaction = Transaction(employee_id=employee_id, type=type, receipt_number=receipt_number, date_time=date_time)
         new_transaction_details = []
         for product, quantity in transaction_details:
             new_transaction_details.append(Transaction_Detail(new_transaction, product, quantity))
