@@ -86,7 +86,7 @@ def catalog_view(request):
                 response['success'] = True
                 response['message'] = 'Product successfully deleted'
             else:
-                raise PermissionError
+                raise PermissionError(f'You do not have the permission to delete product')
         except ObjectDoesNotExist:
             response['message']='That product is not on database'
         except KeyError:
